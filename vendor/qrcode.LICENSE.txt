@@ -1,0 +1,2 @@
+qrcode-generator 1.4.4 (vendor/qrcode.js), Copyright (c) 2009 Kazuhiko Arase, licença MIT (http://www.opensource.org/licenses/mit-license.php).
+"QR Code" é marca registrada da DENSO WAVE INCORPORATED. Obtido do pacote npm qrcode-generator@1.4.4.

@@ -18,16 +18,20 @@ select,button{font:inherit;padding:9px 10px;border-radius:8px;border:1px solid v
 button{cursor:pointer}button:disabled{opacity:.5;cursor:default}button.p{background:var(--ac);color:#fff;border-color:var(--ac)}button.e{background:var(--bad);color:#fff;border-color:var(--bad);font-weight:700}
 .g{display:grid;grid-template-columns:1fr 1fr;gap:8px}canvas{width:100%;height:230px;display:block}.big canvas{height:min(62vh,520px)}details{margin-top:8px;font-size:13px;color:var(--mut)}summary{cursor:pointer;color:var(--ac)}details p{margin:6px 0}.hd{display:flex;justify-content:space-between;align-items:center}.hd button{width:auto;padding:3px 10px;font-size:12px}.hd select{width:auto;padding:3px 6px;font-size:12px}#cen{background:var(--bg);border-radius:8px;padding:8px;margin-top:8px;font-size:13px}
 .dx{font-size:20px;font-weight:700}.mut{color:var(--mut);font-size:13px}table{width:100%;font-size:13px;border-collapse:collapse}td{padding:2px 0}td:last-child{text-align:right}
-#log{font:12px/1.5 ui-monospace,monospace;max-height:110px;overflow:auto;color:var(--mut)}
+#log{font:12px/1.5 ui-monospace,monospace;max-height:150px;overflow:auto;color:var(--mut)}#log .adu{color:var(--bad);font-weight:700}#log code{opacity:.7}.chs{font-weight:700;margin-bottom:6px}.chs.ok{color:var(--ok)}.chs.ruim{color:var(--bad)}.bar{display:grid;gap:8px}.bar button{text-align:left}#barres b{color:var(--tx)}#ap{display:none;position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--card);border-top:2px solid var(--ac);padding:10px 12px calc(10px + env(safe-area-inset-bottom));max-height:46vh;overflow:auto}
+.aph{display:flex;justify-content:space-between;align-items:center;gap:8px}.apc{font:700 26px ui-monospace,monospace}.apc.neg{color:var(--bad)}.apg{display:grid;grid-template-columns:1fr 2fr 1fr;gap:8px;margin-top:8px}.apg+.apg{grid-template-columns:1fr 1fr 1fr}.apg button{min-height:52px;font-size:16px}
+body.apres{font-size:18px;padding-bottom:46vh}body.apres button,body.apres select{min-height:48px}body.apres .mut{font-size:15px}
 </style></head><body><main>
 <h1>Bearing AI Lab <span class="mut">· simulador (dados sintéticos)</span></h1>
+<button id="apon" class="p" style="margin-bottom:4px">Modo apresentador (roteiro de 15 min)</button>
 <div class="card"><h2>Modo de uso</h2><select id="view"><option value="sim">Simulador livre</option><option value="quiz">Quiz: descubra a falha</option></select></div>
 <div class="card" id="qz" style="display:none"><h2>Quiz</h2><div id="qinfo"></div><div id="qopts" class="g" style="margin-top:8px"></div><div id="qres" style="margin-top:8px"></div>
 <div class="g" style="margin-top:8px"><button class="p" id="qnew">Novo desafio</button><button id="qrev" disabled>Ver diagnóstico do sistema</button></div><div class="mut" id="qsc" style="margin-top:6px"></div></div>
 <div class="card sim"><h2>Cenários prontos</h2><div class="g"><select id="scn"></select><button class="p" id="scgo">Carregar</button></div><div id="cen" class="mut">Escolha um cenário para ver o que observar.</div></div>
 <div class="card"><h2>Máquina</h2><select id="prof"></select><div class="mut" id="pst"></div></div>
-<div class="card sim" id="kc"><div class="hd"><h2>Bancada <span class="mut" style="font-weight:400">(ilustrativa)</span></h2><span style="display:flex;gap:6px"><button id="vcom" class="p">Câmera comum</button><button id="vter">Térmica</button></span></div><canvas id="c5" style="width:100%;height:300px;display:block;border-radius:8px"></canvas><div id="leg" class="mut" style="display:none;margin-top:6px"></div>
-<details><summary>Como ler</summary><p>O rolamento de aço fica meio submerso em óleo dentro de um reservatório de vidro. O nível desenhado segue o nível de óleo do simulador: a marca MÍN é a faixa mínima (50%) e a MÁX a máxima (90%). Óleo baixo expõe a esfera inferior; óleo em excesso agita a superfície. A carcaça treme conforme a falha, a severidade e a rotação, e a rotação é desenhada em câmera lenta. O aço não muda de cor com a falha: na vida real um rolamento ruim não fica vermelho. Na visão Térmica (cor falsa, como numa câmera termográfica) só a carcaça mostra a temperatura do simulador; o resto da cena é desenhado na temperatura ambiente. Tudo aqui é ilustrativo.</p></details></div>
+<div class="card sim" id="kc"><div class="hd"><h2>Bancada <span class="mut" style="font-weight:400">(ilustrativa)</span></h2><span style="display:flex;gap:6px"><button id="vcom" class="p">Câmera comum</button><button id="vter">Térmica</button></span></div>
+<div style="display:flex;gap:6px;margin:6px 0"><button id="lub_o" class="p">Óleo (recipiente)</button><button id="lub_g">Graxa (visor)</button></div><canvas id="c5" style="width:100%;height:300px;display:block;border-radius:8px"></canvas><div id="leg" class="mut" style="display:none;margin-top:6px"></div>
+<details><summary>Como ler</summary><p>O rolamento de aço fica meio submerso em óleo dentro de um reservatório de vidro. O nível desenhado segue o nível de óleo do simulador: a marca MÍN é a faixa mínima (50%) e a MÁX a máxima (90%). Óleo baixo expõe a esfera inferior; óleo em excesso agita a superfície. A carcaça treme conforme a falha, a severidade e a rotação, e a rotação é desenhada em câmera lenta. O aço não muda de cor com a falha: na vida real um rolamento ruim não fica vermelho. Na visão Térmica (cor falsa, como numa câmera termográfica) só a carcaça mostra a temperatura do simulador; o resto da cena é desenhado na temperatura ambiente. Na variante Graxa o rolamento fica numa carcaça de metal com visor de vidro e a graxa aparece como um anel entre as pistas: o anel fino externo marca MÍN e o interno marca MÁX. O simulador tem uma única variável de lubrificação (o nível, faixa 50 a 90%); com graxa ela é desenhada como o preenchimento do espaço entre os anéis, o que é uma analogia visual e não um modelo de graxa. Pouca graxa deixa as esferas à mostra; graxa demais forma sobras nas bordas e, como no óleo em excesso, aquece mais. Tudo aqui é ilustrativo.</p></details></div>
 <div class="card sim" id="kr"><div class="hd"><h2>Corrida A/B/C <span class="mut" style="font-weight:400">(simulada)</span></h2></div>
 <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><select id="rc" aria-label="Cenário"></select><select id="rp" aria-label="Operador"></select><select id="rv" aria-label="Velocidade"><option value="15">15×</option><option value="30" selected>30×</option><option value="60">60×</option></select></div>
 <label style="display:flex;gap:6px;align-items:center;margin:6px 0"><input type="checkbox" id="rm"> A plateia aprova no modo B (a falha continua enquanto esperamos)</label>
@@ -55,22 +59,40 @@ button{cursor:pointer}button:disabled{opacity:.5;cursor:default}button.p{backgro
 <div class="card" id="k3"><div class="hd"><h2>Espectrograma do som <span class="mut" style="font-weight:400">(ilustrativo)</span></h2><button data-big="k3">Ampliar</button></div><canvas id="c4" style="height:170px"></canvas>
 <details><summary>Como ler</summary><p>Eixo horizontal: tempo (2 s do som em loop). Eixo vertical: frequência, de 0 a 6 kHz. Quanto mais claro, mais energia. Falha de rolamento aparece como faixas verticais repetidas (as batidas) na região de ~3 kHz; óleo fora da faixa clareia o fundo de alta frequência. A escala de claro e escuro é só de intensidade, não é cor do rolamento.</p></details></div>
 <div class="card"><h2>Temperatura e frequências</h2><div id="tp"></div><details><summary>Como ler</summary><p>A temperatura segue um modelo de 1ª ordem (constante de 600 s) rumo ao valor estacionário, que sobe com RPM², carga e desvio de lubrificação. O tempo simulado avança 30 s por segundo real. As frequências são calculadas da geometria do rolamento e do RPM.</p></details><table id="fq"></table></div>
-<div class="card sim"><h2>Registro de auditoria</h2><div id="log"></div></div>
+<div class="card sim" id="kau"><h2>Registro de auditoria <span class="mut" style="font-weight:400">(cadeia de hash)</span></h2>
+<div id="chs" class="chs">—</div><div id="log"></div>
+<div class="g" style="margin-top:8px"><button id="adul">Adulterar uma linha</button><button id="rest">Restaurar</button></div>
+<details><summary>Como ler</summary><p>Cada registro guarda o hash SHA-256 do seu conteúdo mais o hash do registro anterior. Mudar qualquer linha muda o hash dela e desencontra todas as seguintes, e a verificação aponta onde a cadeia quebrou. Aqui a adulteração é feita numa CÓPIA do registro: o simulador não é afetado. No pacote Python a mesma ideia grava a trilha em arquivo.</p></details></div>
+<div class="card sim" id="kbar"><h2>Barreiras de segurança <span class="mut" style="font-weight:400">(teste em cópia do estado)</span></h2>
+<div class="bar"><button data-bar="trocar_maquina">Assistente tenta trocar de máquina</button><button data-bar="passo_maximo">Assistente tenta reduzir 1800 → 600 rpm de uma vez</button><button data-bar="emergencia">Parada de emergência e depois um comando</button></div>
+<div id="barres" class="mut" style="margin-top:8px">Toque em um teste: a tentativa é negada, registrada na auditoria e a máquina em tela não muda.</div></div>
+<div class="card" id="kqr"><h2>Abra no seu celular</h2><div id="qrbox" style="text-align:center"></div><div class="mut" style="text-align:center;margin-top:4px" id="qrurl"></div>
+<p class="mut" style="margin:8px 0 0">Tudo aqui é simulado: operador e aprovador são modelos e os parâmetros são didáticos. O simulador não é evidência de desempenho em máquina real.</p></div>
 <p class="mut">Diagnóstico por regras (pico de envelope × piso de ruído), não o Random Forest do pacote Python. Parâmetros didáticos, não calibrados.</p>
 </main>
+<div id="ap" role="region" aria-label="Modo apresentador"><div class="aph"><b id="apt">—</b><span id="apc" class="apc">15:00</span></div>
+<div class="mut" id="apf" style="font-size:inherit"></div>
+<div class="apg"><button id="apa">◀</button><button id="apx" class="p">Executar passo</button><button id="apn">▶</button></div>
+<div class="apg"><button id="apr">Reiniciar</button><button id="apfs">Tela cheia</button><button id="apq">Sair</button></div></div>
 <script src="vendor/three.min.js"></script>
 <script src="engine.js"></script>
 <script src="audio.js"></script>
 <script src="termica.js"></script>
 <script src="cena.js"></script>
 <script src="corrida.js"></script>
+<script src="auditoria.js"></script>
+<script src="vendor/qrcode.js"></script>
+<script src="apresentador.js"></script>
 <script>
 let CN=null;
 const B=Bearing,$=i=>document.getElementById(i);let S=B.newState(),env=null,x=null,D=null;const ctl=B.Controller(S);let lastProf=null,view="sim",AC=null,SRC=null,tk=0;const nice=R=>{const t=R/6;for(const n of[25,50,100,200,250,500,1000])if(n>=t)return n;return 1000};
 for(const k in B.PROFILES)$("prof").add(new Option(k,k));
 const css=n=>getComputedStyle(document.body).getPropertyValue(n);
 function log(m,ok=true){ctl.log.push({t:S.t,src:"console",ev:m,data:"",ok,reason:ok?"ok":"negado"})}
-function renderLog(){$("log").innerHTML=ctl.log.slice(-40).reverse().map(l=>`<div>${(l.t/60).toFixed(1)} min · ${l.ok?"✓":"✗"} ${l.src} · ${l.ev} ${l.data} ${l.ok?"":"("+l.reason+")"}</div>`).join("")}
+const AU=BearingAuditoria.Cadeia();let auKey="",auV=null;
+function renderLog(){AU.sincronizar(ctl.log);const key=AU.itens.length+"|"+AU.adulteradas().join(",");if(key!==auKey){auKey=key;auV=AU.verificar()}
+  const el=$("chs");el.className="chs "+(auV.ok?"ok":"ruim");el.textContent=auV.ok?"✓ Cadeia íntegra ("+auV.total+" registros)":"✗ Cadeia QUEBRADA a partir do registro "+auV.primeira+" (linha adulterada)";
+  const ad=AU.adulteradas();$("log").innerHTML=AU.itens.slice(-40).reverse().map(l=>`<div class="${ad.includes(l.seq-1)?"adu":""}">#${l.seq} · ${(l.t/60).toFixed(1)} min · ${l.ok?"✓":"✗"} ${l.src} · ${l.ev} ${l.data} ${l.ok?"":"("+l.reason+")"} · <code>${l.hash.slice(0,8)}</code></div>`).join("")}
 function cmd(c,v,tag){const[r,m]=B.command(S,c,v);if(tag)log(`${c}${v!==undefined?"="+v:""}: ${m}`,r);sync(true)}
 function sync(recompute,noaudio){
   const p=B.PROFILES[S.profile];if(lastProf!==S.profile){lastProf=S.profile;buildFaults();buildScn();buildRange()}$("prof").value=S.profile;$("pst").textContent="Perfil "+p.status;
@@ -170,7 +192,10 @@ for(const[id,c]of[["rpm","set_rpm"],["load","set_load"],["sev","set_severity"]])
 on("oil","input",e=>{S.oil=+e.target.value;sync(true)});
 on("lub","change",e=>cmd("set_lubricant",e.target.value,1));on("fault","change",e=>cmd("set_fault",e.target.value,1));
 on("act","click",()=>{const r=ctl.request(B.buildAction(S,D.action),"assistente");sync(!!r.changed)});
-on("stop","click",()=>{ctl.estop();sync(true)});on("reset","click",()=>{ctl.reset();sync(true)});
+on("stop","click",()=>{ctl.estop();sync(true)});on("adul","click",()=>{AU.sincronizar(ctl.log);if(!AU.itens.length)return;AU.restaurar();AU.adulterar(Math.floor(AU.itens.length/2));auKey="";renderLog()});on("rest","click",()=>{AU.restaurar();auKey="";renderLog()});
+document.querySelectorAll("[data-bar]").forEach(b=>b.addEventListener("click",()=>{const r=BearingAuditoria.testarBarreira(b.dataset.bar,S,B);if(!r)return;r.entradas.forEach(e=>ctl.log.push(e));
+  $("barres").innerHTML=`<b>${BearingAuditoria.BARREIRAS[r.tipo].nome}</b><br>${r.negada?"✗ NEGADA":"⚠ NÃO negada"}: ${r.motivo||"—"}<br>Registrada na auditoria (${r.entradas.length} linhas). A máquina em tela não mudou.`;renderLog()}));
+on("reset","click",()=>{ctl.reset();sync(true)});
 setInterval(()=>{if(S.emergency&&S.temp<=26)return;B.stepThermal(S,30);tk++;const dg=+$("deg").value;
   if(dg&&B.degrade(S,30,dg===1?1/18000:1/3600))sync(true,tk%5!==0);
   ctl.tick(D)?sync(true):view==="quiz"?qrender():render()},1000);
@@ -203,7 +228,28 @@ function rcQuadro(now){if(!RC||!RC.run)return;const dt=Math.min(0.1,(now-RC.last
 function rcResumo(){const R=RC.res,L=BearingCorrida,e=L.estatistica(RC.id,RC.perfil,200),f=v=>v===null||v===undefined?"-":mmss(v),row=k=>"<tr><td>"+k+"</td><td>"+f(R[k].tCorrigido)+"</td><td>"+Math.round(R[k].picoC)+" °C</td><td>"+R[k].calorCmin.toFixed(1)+"</td><td>"+R[k].acoes+"</td><td>"+R[k].nocivas+"</td><td>"+(R[k].esperaAprovS?Math.round(R[k].esperaAprovS)+" s":"-")+"</td></tr>";
   $("rs").innerHTML='<div style="overflow-x:auto"><table style="border-collapse:collapse;font-size:12px;width:100%"><tr><th align=left>Modo</th><th>Corrigido em</th><th>Pico</th><th>Calor extra (°C·min)</th><th>Ações</th><th>Nocivas</th><th>Espera de aprovação</th></tr>'+row("A")+row("B")+row("C")+'</table></div><p class="mut" style="font-size:12px;margin:6px 0 0">Operador simulado em 200 sorteios deste cenário e perfil: mediana '+f(e.mediana)+' até confirmar na ronda seguinte (10% a 90%: '+f(e.p10)+' a '+f(e.p90)+'), '+e.nocivasPorExecucao.toFixed(2)+' ações nocivas por execução. B e C não variam. Esta corrida usou a semente '+RC.seed+'.</p>'}
 function corridaIni(){const c=$("rc"),p=$("rp");for(const k in BearingCorrida.CENARIOS)c.add(new Option(BearingCorrida.CENARIOS[k].nome,k));for(const k in BearingCorrida.PERFIS)p.add(new Option(BearingCorrida.PERFIL_NOME[k],k));$("rgo").onclick=rcLargar;$("rrs").onclick=()=>{if(RC)RC.run=false;RC=null;$("rl").innerHTML="";$("rs").innerHTML=""}}
-function iniciaCena(){CN=BearingCena.criarCena($("c5"),{forcar2d:/[?&]2d/.test(location.search)});CN.atualizar(S);const set=m=>{CN.setModo(m);$("vcom").className=m==="comum"?"p":"";$("vter").className=m==="termica"?"p":"";$("leg").style.display=m==="termica"?"block":"none";if(m==="termica")legTerm()};$("vcom").onclick=()=>set("comum");$("vter").onclick=()=>set("termica")}
+function iniciaCena(){CN=BearingCena.criarCena($("c5"),{forcar2d:/[?&]2d/.test(location.search)});CN.atualizar(S);const set=m=>{CN.setModo(m);$("vcom").className=m==="comum"?"p":"";$("vter").className=m==="termica"?"p":"";$("leg").style.display=m==="termica"?"block":"none";if(m==="termica")legTerm()};$("vcom").onclick=()=>set("comum");$("vter").onclick=()=>set("termica");const lub=m=>{CN.setLub(m);$("lub_o").className=m==="oleo"?"p":"";$("lub_g").className=m==="graxa"?"p":""};$("lub_o").onclick=()=>lub("oleo");$("lub_g").onclick=()=>lub("graxa")}
 iniciaCena();corridaIni();
 if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+
+/* F7: modo apresentador e QR */
+(function(){const AP=BearingApresentador;let i=0,t0=0,tm=null,wl=null;
+ try{const q=qrcode(0,"M");q.addData(AP.URL_SITE);q.make();$("qrbox").innerHTML=q.createSvgTag({cellSize:6,margin:2,scalable:true});const sv=$("qrbox").querySelector("svg");if(sv){sv.style.cssText="width:min(70vw,240px);height:auto;background:#fff;border-radius:8px"}}catch(e){}
+ $("qrurl").textContent=AP.URL_SITE;
+ const go=id=>{const e=$(id);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})};
+ function rend(){const st=AP.ROTEIRO[i],sit=AP.situacao((Date.now()-t0)/1000,i);$("apt").textContent=(i+1)+"/"+AP.ROTEIRO.length+" · "+st.titulo;$("apf").textContent=st.fala;
+  const c=$("apc");c.textContent=AP.mmss(sit.restanteEtapa);c.classList.toggle("neg",sit.restanteEtapa<0);c.title="tempo restante da etapa; total restante "+AP.mmss(sit.restanteTotal)}
+ function exec(){const a=AP.ROTEIRO[i].acao;
+  if(a==="normal"){ctl.reset();sync(true);if(!SRC)$("aud").click()}
+  else if(a==="falhas"){const o=[...$("scn").options].find(x=>/lubrifica..o insuficiente/i.test(x.text));if(o){$("scn").value=o.value;$("scgo").click()}}
+  else if(a==="corrida"){$("rm").checked=true;const o=[...$("rc").options].find(x=>x.value==="lubrificacao_insuficiente");if(o)$("rc").value=o.value}
+  go(AP.ROTEIRO[i].alvo)}
+ function ir(k){i=k;rend();go(AP.ROTEIRO[i].alvo)}
+ async function ligar(){document.body.classList.add("apres");$("ap").style.display="block";i=0;t0=Date.now();rend();clearInterval(tm);tm=setInterval(rend,1000);try{if(navigator.wakeLock)wl=await navigator.wakeLock.request("screen")}catch(e){}go(AP.ROTEIRO[0].alvo)}
+ function sair(){document.body.classList.remove("apres");$("ap").style.display="none";clearInterval(tm);try{if(wl)wl.release()}catch(e){}wl=null;if(document.fullscreenElement)document.exitFullscreen()}
+ on("apon","click",ligar);on("apq","click",sair);on("apx","click",exec);on("apn","click",()=>ir(AP.proxima(i)));on("apa","click",()=>ir(AP.anterior(i)));
+ on("apr","click",()=>{ctl.reset();sync(true);audioStop();const r=$("rrs");if(r)r.click();i=0;t0=Date.now();rend();window.scrollTo({top:0,behavior:"smooth"})});
+ if(!document.documentElement.requestFullscreen)$("apfs").style.display="none";
+ on("apfs","click",()=>{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen().catch(()=>{})});
+})();
 </script></body></html>
