@@ -26,6 +26,8 @@ button{cursor:pointer}button:disabled{opacity:.5;cursor:default}button.p{backgro
 <div class="g" style="margin-top:8px"><button class="p" id="qnew">Novo desafio</button><button id="qrev" disabled>Ver diagnóstico do sistema</button></div><div class="mut" id="qsc" style="margin-top:6px"></div></div>
 <div class="card sim"><h2>Cenários prontos</h2><div class="g"><select id="scn"></select><button class="p" id="scgo">Carregar</button></div><div id="cen" class="mut">Escolha um cenário para ver o que observar.</div></div>
 <div class="card"><h2>Máquina</h2><select id="prof"></select><div class="mut" id="pst"></div></div>
+<div class="card sim" id="kc"><div class="hd"><h2>Bancada <span class="mut" style="font-weight:400">(ilustrativa)</span></h2><span style="display:flex;gap:6px"><button id="vcom" class="p">Câmera comum</button><button id="vter">Térmica</button></span></div><canvas id="c5" style="width:100%;height:300px;display:block;border-radius:8px"></canvas><div id="leg" class="mut" style="display:none;margin-top:6px"></div>
+<details><summary>Como ler</summary><p>O rolamento de aço fica meio submerso em óleo dentro de um reservatório de vidro. O nível desenhado segue o nível de óleo do simulador: a marca MÍN é a faixa mínima (50%) e a MÁX a máxima (90%). Óleo baixo expõe a esfera inferior; óleo em excesso agita a superfície. A carcaça treme conforme a falha, a severidade e a rotação, e a rotação é desenhada em câmera lenta. O aço não muda de cor com a falha: na vida real um rolamento ruim não fica vermelho. Na visão Térmica (cor falsa, como numa câmera termográfica) só a carcaça mostra a temperatura do simulador; o resto da cena é desenhado na temperatura ambiente. Tudo aqui é ilustrativo.</p></details></div>
 <div class="card sim"><h2>Diagnóstico</h2><div class="dx" id="dx">—</div><div id="ev" class="mut"></div><div id="src" class="mut"></div>
 <details><summary>Como o diagnóstico decide</summary><p>1º limites de RPM e carga do perfil; 2º picos do espectro de envelope nas frequências de falha (acima de ~6× o piso de ruído); 3º lubrificação (nível fora de 50–90% ou óleo inadequado). Fora de 600–3600 rpm ele se abstém, pois está fora do domínio. É um diagnóstico por regras, não aprendido.</p></details>
 <div class="g" style="margin-top:8px"><button class="p" id="act">Aplicar ação</button><button class="e" id="stop">PARADA DE EMERGÊNCIA</button></div></div>
@@ -50,9 +52,13 @@ button{cursor:pointer}button:disabled{opacity:.5;cursor:default}button.p{backgro
 <div class="card sim"><h2>Registro de auditoria</h2><div id="log"></div></div>
 <p class="mut">Diagnóstico por regras (pico de envelope × piso de ruído), não o Random Forest do pacote Python. Parâmetros didáticos, não calibrados.</p>
 </main>
+<script src="vendor/three.min.js"></script>
 <script src="engine.js"></script>
 <script src="audio.js"></script>
+<script src="termica.js"></script>
+<script src="cena.js"></script>
 <script>
+let CN=null;
 const B=Bearing,$=i=>document.getElementById(i);let S=B.newState(),env=null,x=null,D=null;const ctl=B.Controller(S);let lastProf=null,view="sim",AC=null,SRC=null,tk=0;const nice=R=>{const t=R/6;for(const n of[25,50,100,200,250,500,1000])if(n>=t)return n;return 1000};
 for(const k in B.PROFILES)$("prof").add(new Option(k,k));
 const css=n=>getComputedStyle(document.body).getPropertyValue(n);
@@ -66,6 +72,7 @@ function sync(recompute,noaudio){
   if(recompute){x=B.synth(S,1);env=B.spectrum(x,!p.kind,p.kind?6000:600);D=B.diagnose(S,env);if(SRC&&!noaudio)audioLoad();SG=null}
   render()}
 function render(){
+  if(CN)CN.atualizar(S);
   const bad=D.cond&&D.cond!=="normal";
   $("dx").textContent=D.abstain?"Abstenção":(B.LABELS[D.cond]||D.cond||"—");$("dx").style.color=D.abstain?css("--warn"):bad?css("--bad"):css("--ok");
   $("ev").textContent=D.abstain?D.abstain:D.evidence.join("; ");$("src").textContent=D.source?"Fonte: "+D.source:"";
@@ -162,5 +169,8 @@ setInterval(()=>{if(S.emergency&&S.temp<=26)return;B.stepThermal(S,30);tk++;cons
   ctl.tick(D)?sync(true):view==="quiz"?qrender():render()},1000);
 addEventListener("resize",draw);matchMedia("(prefers-color-scheme:dark)").addEventListener("change",draw);
 sync(true);
+function legTerm(){const L=BearingTermica.legenda(6),bar=L.map(x=>"rgb("+x.cor.join(",")+")").join(",");$("leg").innerHTML='<div style="height:12px;border-radius:6px;background:linear-gradient(90deg,'+bar+')"></div><div style="display:flex;justify-content:space-between;font-size:11px"><span>'+L[0].T+' °C</span><span>'+L[2].T+'</span><span>'+L[4].T+'</span><span>'+L[5].T+' °C</span></div><div style="font-size:11px">Visão termográfica: cor falsa, ilustrativa. Só a carcaça vem do simulador; o resto é ambiente ('+BearingTermica.T_AMB+' °C).</div>'}
+function iniciaCena(){CN=BearingCena.criarCena($("c5"),{forcar2d:/[?&]2d/.test(location.search)});CN.atualizar(S);const set=m=>{CN.setModo(m);$("vcom").className=m==="comum"?"p":"";$("vter").className=m==="termica"?"p":"";$("leg").style.display=m==="termica"?"block":"none";if(m==="termica")legTerm()};$("vcom").onclick=()=>set("comum");$("vter").onclick=()=>set("termica")}
+iniciaCena();
 if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script></body></html>
