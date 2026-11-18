@@ -21,24 +21,40 @@ button{cursor:pointer}button:disabled{opacity:.5;cursor:default}button.p{backgro
 #log{font:12px/1.5 ui-monospace,monospace;max-height:150px;overflow:auto;color:var(--mut)}#log .adu{color:var(--bad);font-weight:700}#log code{opacity:.7}.chs{font-weight:700;margin-bottom:6px}.chs.ok{color:var(--ok)}.chs.ruim{color:var(--bad)}.bar{display:grid;gap:8px}.bar button{text-align:left}#barres b{color:var(--tx)}#ap{display:none;position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--card);border-top:2px solid var(--ac);padding:10px 12px calc(10px + env(safe-area-inset-bottom));max-height:46vh;overflow:auto}
 .aph{display:flex;justify-content:space-between;align-items:center;gap:8px}.apc{font:700 26px ui-monospace,monospace}.apc.neg{color:var(--bad)}.apg{display:grid;grid-template-columns:1fr 2fr 1fr;gap:8px;margin-top:8px}.apg+.apg{grid-template-columns:1fr 1fr 1fr}.apg button{min-height:52px;font-size:16px}
 body.apres{font-size:18px;padding-bottom:46vh}body.apres button,body.apres select{min-height:48px}body.apres .mut{font-size:15px}
+
+button,select{min-height:44px}input[type=range]{min-height:32px}.hd button,.hd select{min-height:44px}
+@media(max-width:420px){main{padding:6px}.card{padding:10px}.g{gap:6px}h1{font-size:16px}}
+body.dalt{--ok:#0072b2;--warn:#8a5a00;--bad:#b34700}@media(prefers-color-scheme:dark){body.dalt{--ok:#56b4e9;--warn:#f0e442;--bad:#e69f00}}
+.tx-ideal{background-image:repeating-linear-gradient(45deg,currentColor 0 2px,transparent 2px 7px)}.tx-baixo{background-image:radial-gradient(currentColor 1.2px,transparent 1.6px);background-size:12px 12px}.tx-espesso{background-image:conic-gradient(currentColor 25%,transparent 0 50%,currentColor 0 75%,transparent 0);background-size:8px 8px}
+#fi_c{display:none;width:34px;height:18px;border:1px solid currentColor;border-radius:4px;vertical-align:middle;margin-right:6px}body.dalt #fi_c{display:inline-block}body.dalt #fi_b{background-color:transparent!important}
+.tut-hl{outline:3px solid var(--ac);outline-offset:3px;border-radius:12px}#tut{display:none;position:fixed;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));z-index:70;background:var(--card);border:2px solid var(--ac);border-radius:12px;padding:12px;max-width:560px;margin:auto}#tut .dots span{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--ln);margin-right:6px}#tut .dots span.on{background:var(--ac)}
+#lk_av{display:none;margin:6px 0;padding:8px;border:1px solid var(--warn);border-radius:8px;color:var(--warn)}
 </style></head><body><main>
 <h1>Bearing AI Lab <span class="mut">· simulador (dados sintéticos)</span></h1>
 <button id="apon" class="p" style="margin-bottom:4px">Modo apresentador (roteiro de 15 min)</button>
 <div class="card"><h2>Modo de uso</h2><select id="view"><option value="sim">Simulador livre</option><option value="quiz">Quiz: descubra a falha</option></select></div>
 <div class="card" id="qz" style="display:none"><h2>Quiz</h2><div id="qinfo"></div><div id="qopts" class="g" style="margin-top:8px"></div><div id="qres" style="margin-top:8px"></div>
 <div class="g" style="margin-top:8px"><button class="p" id="qnew">Novo desafio</button><button id="qrev" disabled>Ver diagnóstico do sistema</button></div><div class="mut" id="qsc" style="margin-top:6px"></div></div>
+<div id="lk_av" role="alert"></div>
 <div class="card sim"><h2>Cenários prontos</h2><div class="g"><select id="scn"></select><button class="p" id="scgo">Carregar</button></div><div id="cen" class="mut">Escolha um cenário para ver o que observar.</div></div>
 <div class="card"><h2>Máquina</h2><select id="prof"></select><div class="mut" id="pst"></div></div>
 <div class="card sim" id="kc"><div class="hd"><h2>Bancada <span class="mut" style="font-weight:400">(ilustrativa)</span></h2><span style="display:flex;gap:6px"><button id="vcom" class="p">Câmera comum</button><button id="vter">Térmica</button></span></div>
 <div style="display:flex;gap:6px;margin:6px 0"><button id="lub_o" class="p">Óleo (recipiente)</button><button id="lub_g">Graxa (visor)</button></div><canvas id="c5" style="width:100%;height:300px;display:block;border-radius:8px"></canvas><div id="leg" class="mut" style="display:none;margin-top:6px"></div>
-<details><summary>Como ler</summary><p>O rolamento de aço fica meio submerso em óleo dentro de um reservatório de vidro. O nível desenhado segue o nível de óleo do simulador: a marca MÍN é a faixa mínima (50%) e a MÁX a máxima (90%). Óleo baixo expõe a esfera inferior; óleo em excesso agita a superfície. A carcaça treme conforme a falha, a severidade e a rotação, e a rotação é desenhada em câmera lenta. O aço não muda de cor com a falha: na vida real um rolamento ruim não fica vermelho. Na visão Térmica (cor falsa, como numa câmera termográfica) só a carcaça mostra a temperatura do simulador; o resto da cena é desenhado na temperatura ambiente. Na variante Graxa o rolamento fica numa carcaça de metal com visor de vidro e a graxa aparece como um anel entre as pistas: o anel fino externo marca MÍN e o interno marca MÁX. O simulador tem uma única variável de lubrificação (o nível, faixa 50 a 90%); com graxa ela é desenhada como o preenchimento do espaço entre os anéis, o que é uma analogia visual e não um modelo de graxa. Pouca graxa deixa as esferas à mostra; graxa demais forma sobras nas bordas e, como no óleo em excesso, aquece mais. Tudo aqui é ilustrativo.</p></details></div>
+<details><summary>Como ler</summary><p>O rolamento de aço fica meio submerso em óleo dentro de um reservatório de vidro. O nível desenhado segue o nível de óleo do simulador: a marca MÍN é a faixa mínima (50%) e a MÁX a máxima (90%). Óleo baixo expõe a esfera inferior; óleo em excesso agita a superfície. A carcaça treme conforme a falha, a severidade e a rotação, e a rotação é desenhada em câmera lenta. O aço não muda de cor com a falha: na vida real um rolamento ruim não fica vermelho. Na visão Térmica (cor falsa, como numa câmera termográfica) só a carcaça mostra a temperatura do simulador; o resto da cena é desenhado na temperatura ambiente. Na variante Graxa o rolamento fica numa carcaça de metal com visor de vidro e a graxa aparece como um anel entre as pistas: o anel fino externo marca MÍN e o interno marca MÁX. O simulador tem uma única variável de lubrificação (o nível, faixa 50 a 90%); com graxa ela é desenhada como o preenchimento do espaço entre os anéis, o que é uma analogia visual e não um modelo de graxa. Pouca graxa deixa as esferas à mostra; graxa demais forma sobras nas bordas e, como no óleo em excesso, aquece mais. Tudo aqui é ilustrativo. <b>Premissa didática:</b> a janela de 50% a 90% do reservatório não tem fonte (as fontes falam do elemento rolante inferior, cerca de 50% imerso). <b>Com fonte:</b> geometria do 6205 (9 esferas, d = 7,94 mm, diâmetro primitivo 39,04 mm).</p></details></div>
+<div class="card sim" id="kfi"><h2>Película de óleo <span class="mut" style="font-weight:400">(espessura ilustrativa, didática)</span></h2><div class="hd"><span class="dx" id="fi_v">—</span><span class="mut"><span id="fi_c"></span><span id="fi_e"></span></span></div><div style="position:relative;height:14px;border-radius:7px;background:var(--bg);border:1px solid var(--ln);margin-top:6px;overflow:hidden"><div style="position:absolute;left:33.3%;width:33.4%;top:0;bottom:0;background:var(--ok);opacity:.25"></div><div id="fi_b" style="position:absolute;left:0;top:0;bottom:0;width:0;background:var(--ac)"></div></div><div class="mut" style="display:flex;justify-content:space-between"><span>0</span><span>50</span><span>100</span><span>150 µm</span></div><details><summary>Como ler</summary><p>Valor didático, não medido: o estado (Baixo, Ideal, Espesso) vem só do nível de óleo; o número em µm é ilustrativo e fica dentro da faixa do estado (base pelo nível, reduzida por rpm e severidade). A faixa ideal de 50 a 100 µm é premissa didática, sem fonte: o filme real em um rolamento é de cerca de 0,1 a 2 µm. No Quiz este indicador fica oculto.</p></details></div>
+<div class="card sim" id="ktl"><h2>Linha do tempo da falha <span class="mut" style="font-weight:400">(janela de 10 min simulados)</span></h2><canvas id="tl" style="height:150px"></canvas><input type="range" id="tl_r" min="0" max="0" value="0" aria-label="Posição no tempo"><div class="g" style="grid-template-columns:1fr 1fr 1fr;margin-top:6px"><button id="tl_p">Pausar</button><button id="tl_v">Voltar 30 s</button><button id="tl_pl" class="p">Play</button></div><div class="mut" id="tl_t" style="margin-top:6px"></div><details><summary>Como ler</summary><p>Laranja: severidade da falha (0 a 1). Vermelho: temperatura (20 a 120 °C). O índice de saúde (1 − severidade) é só visual e não altera o diagnóstico. Pausar congela o relógio simulado (30 s simulados por segundo real); Voltar e a barra levam a bancada de volta ao estado gravado naquele instante, e Play continua dali (o futuro gravado é descartado). <b>Premissa didática:</b> a ruptura da película é marcada no primeiro instante com nível de óleo abaixo de 50% (película falhada) ou severidade a partir de 0,8; ligue a Degradação automática (Lenta ≈ 10 min, Rápida ≈ 2 min) para ver a curva subir.</p></details></div>
+<div class="card sim" id="kid"><h2>Idade do óleo <span class="mut" style="font-weight:400">(só aparência)</span></h2><div class="g"><select id="id_s" aria-label="Idade do óleo"><option value="novo">Novo</option><option value="usado">Usado</option><option value="envelhecido">Envelhecido</option></select><button id="id_t" class="p">Trocar óleo</button></div><label style="justify-content:flex-start;gap:8px"><input type="checkbox" id="id_a"> Envelhecer com o tempo simulado</label><details><summary>Como ler</summary><p>Muda só a cor, as partículas e a borra do óleo na bancada; <b>não muda o diagnóstico</b>. É diferente de "Óleo adequado / inadequado" (seletor em Controles), que indica se o óleo é o correto para a máquina e entra na regra de lubrificação. <b>Premissa didática:</b> com "Envelhecer com o tempo", o óleo passa a Usado após 10 min e a Envelhecido após 30 min simulados. Trocar óleo volta a Novo.</p></details></div>
+<div class="card sim" id="ksr"><h2>Sinal real <span class="mut" style="font-weight:400">(arquivo seu, só no navegador)</span></h2><div id="sr_rot" style="font-weight:700;color:var(--warn)">SINAL REAL carregado por você: indicação didática, não é laudo. Não entra no link nem na exportação.</div><input type="file" id="sr_f" accept=".wav,.csv,.txt,.mat" style="width:100%;margin-top:8px;min-height:44px" aria-label="Arquivo de sinal"><div class="mut" id="sr_i" style="margin-top:6px"></div>
+<select id="sr_c" style="display:none;width:100%;margin-top:6px" aria-label="Variável ou coluna"></select><div class="g" style="margin-top:8px"><label>Amostragem (Hz)<input type="number" id="sr_fs" min="1000" step="1" style="width:100%;min-height:44px"></label><label>Rotação do arquivo (rpm)<input type="number" id="sr_rpm" min="1" step="1" style="width:100%;min-height:44px"></label></div>
+<div class="g" style="margin-top:8px"><select id="sr_m" aria-label="Modo"><option value="env">Envelope</option><option value="esp">Espectro</option></select><button id="sr_ok" class="p">Analisar</button></div><canvas id="sr_cv" style="height:210px;margin-top:8px"></canvas><div class="mut" id="sr_lg"></div><div id="sr_t" style="overflow-x:auto;margin-top:6px"></div><div id="sr_x" style="margin-top:6px"></div><button id="sr_eq" style="margin-top:8px">Igualar rpm da bancada ao do arquivo</button><details><summary>Como ler</summary><p>Lê .wav, .csv/.txt (uma ou mais colunas; coluna de tempo é detectada) e .mat v5 (como o CWRU: escolha a variável, por exemplo DE_time, informe 12000 ou 48000 Hz e o rpm vem do arquivo). O processamento é no seu navegador e nada é enviado. Compara o espectro (ou envelope) real com o sintético da bancada, cada curva normalizada pelo próprio máximo, com as marcas de 1×, FTF, BPFO, BPFI e 2×BSF da máquina escolhida no rpm do arquivo. "× piso" = pico perto da frequência dividido pela mediana da curva. <b>O diagnóstico por regras do simulador não é aplicado ao sinal real</b> (as regras são didáticas e não calibradas para dados de bancada física). Envelope: banda de 2,5 a 6 kHz (para amostragem abaixo de 12 kHz, de 25% a 45% dela), valor didático. Usa as primeiras 65 536 amostras. Para o CWRU use a máquina 6205-2RS.</p></details></div>
+<div class="card sim" id="kcp"><h2>Comparar cenários <span class="mut" style="font-weight:400">(Atual × Ideal, ou Cenário A × B)</span></h2><div class="g"><button id="cp_i" class="p">Atual × Ideal</button><button id="cp_ab">Cenário A × B</button></div><div class="g" style="margin-top:8px"><button id="cp_a">Guardar atual como A</button><button id="cp_b">Guardar atual como B</button></div><div id="cp_t" style="margin-top:8px;overflow-x:auto"></div><details><summary>Como ler</summary><p>Atual × Ideal: o lado direito é a mesma máquina, no mesmo rpm, com nível de óleo de 70% (só mudam nível e película). Cenário A × B: compara duas situações guardadas por você, cada uma com seu próprio diagnóstico, película e temperatura estacionária. Não confundir com a Corrida A/B/C (operador × assistente). Valores didáticos; a película é ilustrativa.</p></details></div>
 <div class="card sim" id="kr"><div class="hd"><h2>Corrida A/B/C <span class="mut" style="font-weight:400">(simulada)</span></h2></div>
 <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><select id="rc" aria-label="Cenário"></select><select id="rp" aria-label="Operador"></select><select id="rv" aria-label="Velocidade"><option value="15">15×</option><option value="30" selected>30×</option><option value="60">60×</option></select></div>
 <label style="display:flex;gap:6px;align-items:center;margin:6px 0"><input type="checkbox" id="rm"> A plateia aprova no modo B (a falha continua enquanto esperamos)</label>
 <div style="display:flex;gap:6px"><button id="rgo" class="p">Largar</button><button id="rrs">Reiniciar</button></div>
 <div id="rl"></div><div id="rs" style="margin-top:8px"></div>
 <details><summary>Como ler</summary><p>O mesmo defeito é corrigido de três jeitos, em tempo simulado (cronômetros em minutos:segundos). <b>A</b>: operador sozinho, simulado por regras (nota o desvio em 30 a 150 s, ronda a cada 60 s, erra 15% das ações, deixa passar 10%); <b>não representa pessoas reais</b>. <b>B</b>: o assistente diagnostica a cada 10 s e propõe a ação; só é executada depois da aprovação (30 s roteirizados, ou o tempo que a plateia levar). <b>C</b>: o assistente executa sozinho, dentro dos limites do controlador. O assistente só age por ações autorizadas e com passo máximo (por exemplo, a rotação cai no máximo 500 rpm por ação), por isso em sobrerrotação o operador, que ajusta o rpm de uma vez pelo console sem esse limite, pode não ser mais lento que o modo B. Pico e calor extra usam a temperatura do modelo térmico didático (calor extra = °C·min acima de 43 °C, o regime normal de partida). As premissas de tempo vêm do simulador Python e são ajustáveis; os números ilustram o modelo e não medem um sistema real.</p></details></div>
-<div class="card sim"><h2>Diagnóstico</h2><div class="dx" id="dx">—</div><div id="ev" class="mut"></div><div id="src" class="mut"></div>
+<div class="card sim"><h2>Diagnóstico</h2><div class="dx" id="dx">—</div><div id="ev" class="mut"></div><div id="src" class="mut"></div><div id="why" class="mut"></div>
 <details><summary>Como o diagnóstico decide</summary><p>1º limites de RPM e carga do perfil; 2º picos do espectro de envelope nas frequências de falha (acima de ~6× o piso de ruído); 3º lubrificação (nível fora de 50–90% ou óleo inadequado). Fora de 600–3600 rpm ele se abstém, pois está fora do domínio. É um diagnóstico por regras, não aprendido.</p></details>
 <div class="g" style="margin-top:8px"><button class="p" id="act">Aplicar ação</button><button class="e" id="stop">PARADA DE EMERGÊNCIA</button></div></div>
 <div class="card sim"><h2>Controlador</h2><select id="mode"><option value="diagnostico">Modo diagnóstico (só observa, não atua)</option><option value="assistido">Modo assistido (propõe; você aprova)</option><option value="automatico">Modo automático (piloto executa)</option></select>
@@ -58,7 +74,7 @@ body.apres{font-size:18px;padding-bottom:46vh}body.apres button,body.apres selec
 <details><summary>Como ler</summary><p id="hlp2">O sinal é filtrado em 2,5–6 kHz e se extrai a envoltória; o espectro dela mostra picos nas frequências de falha. Linhas pontilhadas: 1x (rotação), FTF (gaiola), BPFO (pista externa), BPFI (pista interna) e 2xBSF (esfera). A linha vermelha é a falha ativa: se há pico em cima dela, o diagnóstico acusa o defeito. Eixo vertical normalizado pelo maior pico.</p></details></div>
 <div class="card" id="k3"><div class="hd"><h2>Espectrograma do som <span class="mut" style="font-weight:400">(ilustrativo)</span></h2><button data-big="k3">Ampliar</button></div><canvas id="c4" style="height:170px"></canvas>
 <details><summary>Como ler</summary><p>Eixo horizontal: tempo (2 s do som em loop). Eixo vertical: frequência, de 0 a 6 kHz. Quanto mais claro, mais energia. Falha de rolamento aparece como faixas verticais repetidas (as batidas) na região de ~3 kHz; óleo fora da faixa clareia o fundo de alta frequência. A escala de claro e escuro é só de intensidade, não é cor do rolamento.</p></details></div>
-<div class="card"><h2>Temperatura e frequências</h2><div id="tp"></div><details><summary>Como ler</summary><p>A temperatura segue um modelo de 1ª ordem (constante de 600 s) rumo ao valor estacionário, que sobe com RPM², carga e desvio de lubrificação. O tempo simulado avança 30 s por segundo real. As frequências são calculadas da geometria do rolamento e do RPM.</p></details><table id="fq"></table></div>
+<div class="card"><h2>Temperatura e frequências</h2><div id="tp"></div><details><summary>Como ler</summary><p>A temperatura segue um modelo de 1ª ordem (constante de 600 s) rumo ao valor estacionário, que sobe com RPM², carga e desvio de lubrificação. O tempo simulado avança 30 s por segundo real. As frequências são calculadas da geometria do rolamento e do RPM. <b>Premissa didática:</b> temperatura de partida de 43 °C; modelo térmico de 1ª ordem com τ = 600 s, estacionário subindo com rpm². <b>Com fonte:</b> FTF, BPFO, BPFI e BSF pela geometria (arXiv 1503.04444).</p></details><table id="fq"></table></div>
 <div class="card sim" id="kau"><h2>Registro de auditoria <span class="mut" style="font-weight:400">(cadeia de hash)</span></h2>
 <div id="chs" class="chs">—</div><div id="log"></div>
 <div class="g" style="margin-top:8px"><button id="adul">Adulterar uma linha</button><button id="rest">Restaurar</button></div>
@@ -79,6 +95,19 @@ body.apres{font-size:18px;padding-bottom:46vh}body.apres button,body.apres selec
 <script src="audio.js"></script>
 <script src="termica.js"></script>
 <script src="cena.js"></script>
+<div class="card" id="kaj"><h2>Ajuda, acessibilidade e link</h2><div class="g"><button id="aj_d">Modo daltônico: desligado</button><button id="aj_t">Refazer tutorial</button></div><button id="aj_l" class="p" style="margin-top:8px">Copiar link do cenário</button><input id="aj_u" readonly style="width:100%;margin-top:6px;font-size:12px;min-height:44px" aria-label="Link do cenário"><details><summary>Como ler</summary><p>Modo daltônico: cada estado da película ganha textura e rótulo além da cor (ideal: hachurado diagonal, "Cobertura ideal"; baixo: pontilhado, "Película insuficiente"; excesso: xadrez, "Excesso / acúmulo") e a paleta muda para uma opção segura para daltonismo; a escolha fica salva neste navegador. O link guarda só parâmetros da bancada (máquina, rpm, carga, óleo, severidade, idade do óleo, falha, tipo de óleo, degradação e modo daltônico), sem dados pessoais; link inválido abre o cenário ideal com aviso. Quiz e Corrida não entram no link.</p></details></div>
+<div class="card" id="krp"><h2>Relatório em PDF</h2><button id="rp_go" class="p">Gerar relatório PDF</button><div class="mut" id="rp_st" style="margin-top:6px"></div><details><summary>Como ler</summary><p>Reúne parâmetros, diagnóstico, película, comparação Atual × Ideal, linha do tempo, gráficos atuais e as últimas entradas da auditoria. Funciona offline: a biblioteca (jsPDF) fica guardada no aplicativo. Dados sintéticos.</p></details></div>
+<div class="card" id="kreg"><h2>Registro e exportação</h2><div class="g"><button class="p" id="rg_add">Registrar situação atual</button><button id="rg_clr">Limpar histórico</button></div><div class="g" style="margin-top:8px"><button id="rg_csv">Exportar CSV</button><button id="rg_json">Exportar JSON</button></div><div class="mut" id="rg_st" style="margin-top:6px"></div><details><summary>Como ler</summary><p>Cada registro guarda perfil, rpm, carga, nível de óleo, lubrificação, falha, severidade, temperatura, diagnóstico, fonte e um hash SHA-256 do próprio registro. O histórico fica só neste navegador (últimas 50 situações) e não é enviado a lugar nenhum. O CSV abre no Excel (UTF-8) e o JSON no Python (<code>json.load</code>). Dados sintéticos.</p></details></div>
+<div class="card" id="kfp"><h2>Fontes e premissas</h2><details open><summary>O que tem fonte e o que é premissa didática</summary><p><b>Com fonte:</b> FTF, BPFO, BPFI e BSF calculadas da geometria e do rpm (artigo arXiv 1503.04444); rolamento de referência 6205 com 9 esferas, d = 7,94 mm e diâmetro primitivo 39,04 mm (mesmo modelo do lado acionado do dataset CWRU).</p><p><b>Premissa didática (sem fonte):</b> nível de óleo MÍN 50% a MÁX 90% do reservatório (as fontes falam do elemento rolante, não do reservatório); película de 50 a 100 µm, só ilustrativa (o filme real é de cerca de 0,1 a 2 µm); rpm válido de 600 a 3600; pico de envelope cerca de 6× o piso de ruído; temperatura de partida de 43 °C; modelo térmico de 1ª ordem com τ = 600 s e estacionário subindo com rpm²; banda do envelope de 2,5 a 6 kHz.</p><p><b>Definição do simulador:</b> relógio simulado de 30 s por segundo real.</p><p>Fonte dos limites de diagnóstico: PLAYBOOK-DIDATICO-MEC-01. As fontes são em maioria secundárias e não foram reconferidas.</p></details></div>
+<script src="filme.js"></script>
+<div id="tut" role="dialog" aria-label="Tutorial"><div id="tut_x" style="margin-bottom:8px"></div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="dots"><span></span><span></span><span></span></span><span style="display:flex;gap:6px"><button id="tut_p" style="width:auto">Pular</button><button id="tut_n" class="p" style="width:auto">Próximo</button></span></div></div>
+<script src="vendor/jspdf.umd.min.js"></script>
+<script src="linha.js"></script>
+<script src="relatorio.js"></script>
+<script src="sinal.js"></script>
+<script src="cenario.js"></script>
+<script src="comparar.js"></script>
+<script src="registro.js"></script>
 <script src="corrida.js"></script>
 <script src="auditoria.js"></script>
 <script src="vendor/qrcode.js"></script>
@@ -162,12 +191,12 @@ function audioStop(){if(SRC){try{SRC.stop()}catch(e){}SRC=null}$("aud").textCont
 const QS={ok:0,n:0};try{Object.assign(QS,JSON.parse(localStorage.getItem("bal_quiz")||"{}"))}catch(e){}
 let Q={sol:null,ans:null,ev:""};
 const qpool=()=>["normal",...B.faultsOf(S),"lubrificacao_insuficiente","excesso_lubrificante","sobrerrotacao","sobrecarga"];
-function qnew(){const p=B.PROFILES[S.profile],pool=qpool(),r=(a,b)=>a+Math.random()*(b-a);
+function qnew(){const p=B.PROFILES[S.profile],pool=qpool(),r=(a,b)=>a+Math.random()*(b-a),NV=window.nivelQuiz?window.nivelQuiz():1;
   for(let t=0;t<40;t++){const sol=pool[Math.floor(Math.random()*pool.length)];ctl.reset();
     B.command(S,"set_rpm",Math.round(r(1200,2800)/50)*50);B.command(S,"set_load",Math.round(r(20,65)));S.oil=Math.round(r(60,85));
     if(sol==="lubrificacao_insuficiente")S.oil=Math.round(r(10,35));else if(sol==="excesso_lubrificante")S.oil=Math.round(r(95,100));
-    else if(sol==="sobrerrotacao")B.command(S,"set_rpm",p.lim.rpm+Math.round(r(300,1200)/50)*50);else if(sol==="sobrecarga")B.command(S,"set_load",Math.min(100,p.lim.load+Math.round(r(8,18))));
-    else if(sol!=="normal"){B.command(S,"set_fault",sol);S.sev=Math.round(r(0.5,1)*20)/20}
+    else if(sol==="sobrerrotacao")B.command(S,"set_rpm",p.lim.rpm+Math.round(r(NV>=3?100:NV===2?200:300,1200)/50)*50);else if(sol==="sobrecarga")B.command(S,"set_load",Math.min(100,p.lim.load+Math.round(r(NV>=3?3:NV===2?5:8,18))));
+    else if(sol!=="normal"){B.command(S,"set_fault",sol);const SR=NV>=3?[0.2,0.4]:NV===2?[0.35,0.65]:[0.6,1];S.sev=Math.round(r(SR[0],SR[1])*20)/20}
     S.temp=B.steadyTemp(S);const xx=B.synth(S,1),d=B.diagnose(S,B.spectrum(xx,!p.kind,p.kind?6000:600));if(d.cond===sol){Q={sol,ans:null,ev:d.evidence.join("; ")};break}}
   $("deg").value="0";sync(true)}
 function qrender(){const on=view==="quiz";$("qz").style.display=on?"":"none";document.querySelectorAll(".sim").forEach(e=>e.style.display=on?"none":"");if(!on)return;
@@ -252,4 +281,138 @@ if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch((
  if(!document.documentElement.requestFullscreen)$("apfs").style.display="none";
  on("apfs","click",()=>{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen().catch(()=>{})});
 })();
-</script></body></html>
+</script><script>
+(function(){const R=BearingRegistro,A=BearingAuditoria,e=i=>document.getElementById(i);let st=null;try{st=localStorage}catch(x){}
+const mem={g:{},getItem(k){return k in this.g?this.g[k]:null},setItem(k,v){this.g[k]=v}};const arm=st||mem;
+function ui(m){const n=R.carregar(arm).length;e("rg_st").textContent=(m?m+" ":"")+n+" de "+R.MAX+" situações no histórico."+(st?"":" (armazenamento do navegador indisponível: vale só até fechar a página)");["rg_csv","rg_json","rg_clr"].forEach(i=>e(i).disabled=!n)}
+e("rg_add").onclick=()=>{if(view==="quiz"&&!Q.ans){ui("No Quiz, responda antes de registrar (o diagnóstico revelaria a resposta).");return}R.adicionar(arm,R.registro(S,D,B,A));ui("Registrado.")};
+e("rg_csv").onclick=()=>R.baixar("bancada_rolamentos_historico.csv",R.csv(R.carregar(arm)),"text/csv;charset=utf-8");
+e("rg_json").onclick=()=>R.baixar("bancada_rolamentos_historico.json",R.json(R.carregar(arm)),"application/json");
+e("rg_clr").onclick=()=>{if(confirm("Apagar o histórico deste navegador?")){try{arm.setItem(R.CHAVE,"[]")}catch(x){}ui("Histórico apagado.")}};ui("")})();
+</script>
+<script>
+(function(){const F=BearingFilme,e=i=>document.getElementById(i),_r=render;
+function upd(){try{const f=F.filme(S.oil,S.rpm,S.sev);e("fi_v").textContent=f.um.toFixed(1)+" µm";e("fi_e").textContent=f.rotulo;const b=e("fi_b");b.style.width=Math.min(100,f.um/1.5)+"%";b.style.background=f.estado==="ideal"?css("--ok"):css("--warn");
+const k=D&&D.cond&&D.cond!=="normal"?B.FAULT_FREQ[D.cond]:null,fr=k?B.freqs(S.rpm,B.PROFILES[S.profile]):null;
+e("why").textContent=fr&&typeof fr[k]==="number"?"Frequência que mais pesou: "+k+" = "+fr[k].toFixed(1)+" Hz (sinal de "+(B.LABELS[D.cond]||D.cond).toLowerCase()+").":""}catch(x){}}
+render=function(){_r();upd()};upd()})();
+document.getElementById("log").insertAdjacentHTML("afterend",'<button id="au_dl" style="margin-top:8px">Baixar auditoria (JSON)</button>');
+document.getElementById("au_dl").onclick=()=>{AU.sincronizar(ctl.log);BearingRegistro.baixar("bancada_rolamentos_auditoria.json",JSON.stringify({origem:"Bearing AI Lab (dados sintéticos)",genese:BearingAuditoria.GENESIS,verificacao:AU.verificar(),entradas:AU.itens},null,2),"application/json")};
+</script>
+<script>
+(function(){const C=BearingComparar,F=BearingFilme,e=i=>document.getElementById(i),_r=render;let modo="i",A=null,Bs=null,key="";
+const col=(t,l)=>l?`<td><b>${t}</b></td>`:`<td><b>${t}</b></td>`;
+function tab(x,y,nx,ny){const R=(r,f)=>`<tr><td class="mut">${r}</td><td>${f(x)}</td><td>${f(y)}</td></tr>`;
+return `<table style="text-align:left"><tr><td></td><td><b>${nx}</b></td><td><b>${ny}</b></td></tr>`+R("Nível de óleo",o=>o.nivel+"%")+R("rpm",o=>o.rpm)+R("Falha / sev.",o=>o.falha+" / "+o.sev)+R("Película (ilustr.)",o=>o.um.toFixed(1)+" µm")+R("Estado",o=>o.estado)+R("Diagnóstico",o=>o.cond)+R("Fonte",o=>o.fonte||"—")+R("Temp. estacionária",o=>o.temp.toFixed(1)+" °C")+"</table>"}
+function upd(){try{const k=modo+"|"+[S.profile,S.rpm,S.load,S.oil,S.sev,S.fault,S.lub].join()+"|"+(A?1:0)+(Bs?1:0)+JSON.stringify(A)+JSON.stringify(Bs);if(k===key)return;key=k;let h;
+if(modo==="i"){h=tab(C.lado(C.instantaneo(S),B,F),C.lado(C.ideal(S),B,F),"Atual","Ideal (70%)")}
+else if(A&&Bs){h=tab(C.lado(A,B,F),C.lado(Bs,B,F),"Cenário A","Cenário B")}else{h='<span class="mut">Guarde a situação atual como A, mude os controles e guarde como B.</span>'}
+e("cp_t").innerHTML=h;e("cp_i").className=modo==="i"?"p":"";e("cp_ab").className=modo==="ab"?"p":""}catch(x){}}
+e("cp_i").onclick=()=>{modo="i";upd()};e("cp_ab").onclick=()=>{modo="ab";upd()};
+e("cp_a").onclick=()=>{A=C.instantaneo(S);modo="ab";upd()};e("cp_b").onclick=()=>{Bs=C.instantaneo(S);modo="ab";upd()};
+render=function(){_r();upd()};upd()})();
+</script>
+<script>
+(function(){const LN=BearingLinha,F=BearingFilme,e=i=>document.getElementById(i),Ls=LN.Linha();let pausado=false,sel=-1;
+const bS=B.stepThermal,bD=B.degrade;B.stepThermal=function(s,dt){if(pausado)return;return bS.call(B,s,dt)};B.degrade=function(s,dt,r){if(pausado)return false;return bD.call(B,s,dt,r)};
+const mm=t=>{t=Math.max(0,Math.round(t));return String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0")};
+function rend(){const a=Ls.a,n=a.length;if(!n)return;const r=e("tl_r");r.max=n-1;r.value=sel<0?n-1:sel;const c=e("tl"),k=devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;if(!w)return;if(c.width!==Math.round(w*k)){c.width=Math.round(w*k);c.height=Math.round(h*k)}
+const g=c.getContext("2d");g.setTransform(k,0,0,k,0,0);g.clearRect(0,0,w,h);const t0=a[0].t,sp=Math.max(60,a[n-1].t-t0),P=24,X=t=>P+(t-t0)/sp*(w-P-6),Y=v=>h-16-v*(h-26);
+g.strokeStyle=css("--ln");g.fillStyle=css("--mut");g.font="10px sans-serif";g.beginPath();[0,.5,1].forEach(v=>{g.moveTo(P,Y(v));g.lineTo(w-6,Y(v))});g.stroke();g.fillText("1",8,Y(1)+4);g.fillText("0",8,Y(0)+4);g.fillText("0",P,h-3);g.fillText(mm(sp)+" (relativo)",w-92,h-3);
+const ln=(f,col)=>{g.strokeStyle=col;g.lineWidth=2;g.beginPath();a.forEach((x,i)=>{i?g.lineTo(X(x.t),Y(f(x))):g.moveTo(X(x.t),Y(f(x)))});g.stroke();g.lineWidth=1};
+ln(x=>x.sev,"#f79009");ln(x=>Math.min(1,Math.max(0,(x.temp-20)/100)),"#f04438");
+const ru=Ls.ruptura();if(ru){g.strokeStyle=css("--tx");g.setLineDash([4,3]);g.beginPath();g.moveTo(X(ru.t),4);g.lineTo(X(ru.t),h-16);g.stroke();g.setLineDash([]);g.fillStyle=css("--tx");g.fillText("ruptura",Math.min(X(ru.t)+3,w-44),12)}
+const i=sel<0?n-1:sel,x=a[i];g.strokeStyle=css("--ac");g.beginPath();g.moveTo(X(x.t),4);g.lineTo(X(x.t),h-16);g.stroke();
+e("tl_t").textContent=mm(x.t-t0)+" / "+mm(sp)+" min · severidade "+x.sev.toFixed(2)+" · índice de saúde "+LN.saude(x).toFixed(2)+" · "+x.temp.toFixed(1)+" °C · película "+x.um.toFixed(1)+" µm"+(pausado?" · PAUSADO":"")+(ru?" · ruptura em "+mm(ru.t-t0):"")}
+function aplicar(i){const a=Ls.a[i];if(!a)return;Object.assign(S,{t:a.t,sev:a.sev,temp:a.temp,oil:a.oil,rpm:a.rpm,load:a.load,fault:a.fault});sync(true);rend()}
+setInterval(()=>{if(pausado||(S.emergency&&S.temp<=26))return;if(Ls.push(S,F))rend()},1000);
+e("tl_p").onclick=()=>{pausado=true;rend()};
+e("tl_pl").onclick=()=>{if(sel>=0){Ls.cortar(sel);sel=-1}pausado=false;rend()};
+e("tl_v").onclick=()=>{if(!Ls.a.length)return;pausado=true;sel=Math.max(0,(sel<0?Ls.a.length-1:sel)-1);aplicar(sel)};
+e("tl_r").oninput=ev=>{if(!Ls.a.length)return;pausado=true;sel=+ev.target.value;aplicar(sel)};
+Ls.push(S,F);rend();addEventListener("resize",rend);
+/* --- relatório PDF --- */
+function img(id){const c=e(id);if(!c||!c.width||!c.clientWidth)return null;const o=document.createElement("canvas");o.width=c.width;o.height=c.height;const g=o.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,o.width,o.height);g.drawImage(c,0,0);const h=c.closest(".card")&&c.closest(".card").querySelector("h2");return{w:o.width,h:o.height,d:o.toDataURL("image/png"),titulo:h?h.textContent.replace(/\s+/g," ").trim():id}}
+e("rp_go").onclick=()=>{try{const C=BearingComparar,a=C.lado(C.instantaneo(S),B,F),i=C.lado(C.ideal(S),B,F),f=F.filme(S.oil,S.rpm,S.sev);AU.sincronizar(ctl.log);const ru=Ls.ruptura();
+const cmp=[["","Atual","Ideal (70%)"],["Nivel de oleo",a.nivel+"%",i.nivel+"%"],["rpm",a.rpm,i.rpm],["Pelicula (ilustr.)",a.um.toFixed(1)+" um",i.um.toFixed(1)+" um"],["Estado",a.estado,i.estado],["Diagnostico",a.cond,i.cond],["Temp. estacionaria",a.temp.toFixed(1)+" C",i.temp.toFixed(1)+" C"]];
+const d={geradoEm:new Date().toLocaleString("pt-BR"),params:[["Perfil",S.profile],["rpm",Math.round(S.rpm)],["Carga",S.load+"%"],["Nivel de oleo",S.oil+"%"],["Lubrificacao",S.lub],["Idade do oleo",S.idade||"novo"],["Falha",S.fault],["Severidade",(+S.sev).toFixed(2)],["Temperatura",S.temp.toFixed(1)+" C"],["Tempo simulado",(S.t/60).toFixed(1)+" min"]],
+diag:$("dx").textContent,freq:$("why").textContent,fonte:$("src").textContent.replace("Fonte: ",""),evid:$("ev").textContent,filme:f.um.toFixed(1)+" um - "+f.rotulo+" (valor didatico, nao medido)",cmp,linha:Ls.a,rupt:ru,
+imgs:["c1","c2","c4"].map(img).filter(Boolean),audit:AU.itens.slice(-8).map(l=>"#"+l.seq+" "+(l.t/60).toFixed(1)+" min "+(l.ok?"ok":"negado")+" "+l.src+" "+l.ev+" "+l.data+" "+l.hash.slice(0,8))};
+const doc=BearingRelatorio.gerar(window.jspdf.jsPDF,d);doc.save("bancada_rolamentos_relatorio.pdf");e("rp_st").textContent="Relatório gerado."}catch(x){e("rp_st").textContent="Não foi possível gerar o PDF: "+x.message}};
+/* --- Quiz: sequência de acertos --- */
+let QX={st:0,best:0};try{Object.assign(QX,JSON.parse(localStorage.getItem("bal_quiz2")||"{}"))}catch(x){}
+e("qopts").addEventListener("click",()=>{if(Q.ans&&!Q._c){Q._c=1;if(Q.ans===Q.sol){QX.st++;QX.best=Math.max(QX.best,QX.st)}else QX.st=0;try{localStorage.setItem("bal_quiz2",JSON.stringify(QX))}catch(x){}qrender()}});
+window.nivelQuiz=()=>Math.min(3,1+Math.floor(QX.st/3));const _q=qrender;qrender=function(){_q();const s=e("qsc");if(s)s.textContent+=(QS.n?" · "+Math.round(100*QS.ok/QS.n)+"% de acertos · sequência "+QX.st+" (melhor "+QX.best+")":"")+" · Nível "+window.nivelQuiz()+" de 3 (sobe a cada 3 acertos seguidos; erro volta ao 1)"};
+})();
+</script>
+<script>
+(function(){const e=i=>document.getElementById(i),CE=BearingCenario;let dalt=0,TS=null;
+const lsG=k=>{try{return localStorage.getItem(k)}catch(x){return null}},lsS=(k,v)=>{try{localStorage.setItem(k,v)}catch(x){}};
+/* ---- modo daltônico ---- */
+function setDalt(v,salvar){dalt=v?1:0;document.body.classList.toggle("dalt",!!dalt);e("aj_d").textContent="Modo daltônico: "+(dalt?"ligado":"desligado");if(salvar)lsS("bal_dalt",dalt);try{render()}catch(x){}}
+e("aj_d").onclick=()=>setDalt(!dalt,true);
+/* ---- idade do óleo ---- */
+const LIM={novo:0,usado:600,envelhecido:1800};S.idade=S.idade||"novo";S.oleoT=S.oleoT||0;let lastT=S.t;
+const sincId=()=>{e("id_s").value=S.idade||"novo"};
+e("id_s").onchange=ev=>{S.idade=ev.target.value;S.oleoT=LIM[S.idade];sync(true)};
+e("id_t").onclick=()=>{S.idade="novo";S.oleoT=0;sincId();sync(true)};
+setInterval(()=>{const d=S.t-lastT;lastT=S.t;if(e("id_a").checked&&d>0&&d<=600){S.oleoT=(S.oleoT||0)+d;const n=S.oleoT>=LIM.envelhecido?"envelhecido":S.oleoT>=LIM.usado?"usado":"novo";if(n!==S.idade&&LIM[n]>LIM[S.idade||"novo"]){S.idade=n;sincId()}}},1000);
+/* rótulos/texturas da película + sincronia da idade a cada render */
+const _r=render,ROT={baixo:["Película insuficiente","tx-baixo"],ideal:["Cobertura ideal","tx-ideal"],espesso:["Excesso / acúmulo","tx-espesso"]};
+render=function(){_r();try{sincId();const f=BearingFilme.filme(S.oil,S.rpm,S.sev),r=ROT[f.estado];e("fi_e").textContent=r[0]+" ("+f.rotulo+")";e("fi_c").className=r[1];e("fi_b").className=r[1]}catch(x){}};
+/* ---- link do cenário ---- */
+function aplicar(cfg){B.command(S,"reset");B.command(S,"set_profile",cfg.maquina);B.command(S,"set_rpm",cfg.rpm);B.command(S,"set_load",cfg.carga);S.oil=cfg.oleo;B.command(S,"set_lubricant",cfg.oleotipo);if(cfg.falha!=="normal"){B.command(S,"set_fault",cfg.falha);B.command(S,"set_severity",cfg.sev)}
+S.idade=cfg.idade;S.oleoT=LIM[cfg.idade];S.temp=B.steadyTemp(S);e("deg").value=String(CE.DEGR.indexOf(cfg.degr));ctl.pending={};setDalt(cfg.daltonico,false);sync(true)}
+const L=CE.ler(location.search,B);
+if(L.modo!=="nenhum"){aplicar(L.cfg);if(L.modo==="invalido"){const a=e("lk_av");a.style.display="block";a.textContent="Link inválido ("+L.motivo+"): abri o cenário ideal."}}
+else if(lsG("bal_dalt")==="1")setDalt(1,false);
+const urlAtual=()=>location.origin+location.pathname+"?"+CE.construir(S,+e("deg").value,dalt);
+e("aj_l").onclick=async()=>{const u=urlAtual();e("aj_u").value=u;let ok=false;try{await navigator.clipboard.writeText(u);ok=true}catch(x){e("aj_u").select();try{ok=document.execCommand("copy")}catch(y){}}
+const b=e("aj_l");b.textContent=ok?"Link copiado":"Selecione e copie o link abaixo";setTimeout(()=>{b.textContent="Copiar link do cenário"},2000)};
+/* ---- tutorial (primeira visita, 3 passos) ---- */
+const PASSOS=[{alvo:()=>e("oil").closest(".card")||e("oil"),txt:"Passo 1 de 3: mova o controle de Nível de óleo. Veja o que muda."},{alvo:()=>e("kc"),txt:"Passo 2 de 3: veja a película e o óleo na bancada. Com pouco óleo a película fica falhada."},{alvo:()=>e("dx").closest(".card"),txt:"Passo 3 de 3: veja o diagnóstico. Ele explica o que o simulador concluiu e de onde vem a regra."}];
+let ti=-1;function mostra(i){document.querySelectorAll(".tut-hl").forEach(x=>x.classList.remove("tut-hl"));if(i>=PASSOS.length){ti=-1;e("tut").style.display="none";lsS("bal_tut","1");return}ti=i;const P=PASSOS[i],al=P.alvo();if(al){al.classList.add("tut-hl");al.scrollIntoView({block:"center",behavior:"smooth"})}e("tut_x").textContent=P.txt;document.querySelectorAll("#tut .dots span").forEach((d,k)=>d.classList.toggle("on",k===i));e("tut_n").textContent=i===PASSOS.length-1?"Concluir":"Próximo";e("tut").style.display="block"}
+e("tut_n").onclick=()=>mostra(ti+1);e("tut_p").onclick=()=>mostra(PASSOS.length);e("aj_t").onclick=()=>{try{document.getElementById("view").value="sim";document.getElementById("view").dispatchEvent(new Event("change"))}catch(x){}mostra(0)};
+e("oil").addEventListener("input",()=>{if(ti===0)setTimeout(()=>mostra(1),400)});
+if(!lsG("bal_tut")&&L.modo==="nenhum"&&!document.body.classList.contains("apres"))setTimeout(()=>mostra(0),600);
+sincId();render();
+})();
+</script>
+<script>
+(function(){const Sg=BearingSinal,e=i=>document.getElementById(i);let D0=null,ult="",key="";
+const inflar=async u=>{const ds=new DecompressionStream("deflate"),w=ds.writable.getWriter();w.write(u);w.close();return new Uint8Array(await new Response(ds.readable).arrayBuffer())};
+const msg=t=>{e("sr_i").textContent=t};
+async function carrega(f){try{D0=null;e("sr_c").style.display="none";const ext=(f.name.split(".").pop()||"").toLowerCase();let vars={},fs=null,rpm=null,nota="";
+if(ext==="wav"){const w=Sg.lerWav(await f.arrayBuffer());vars={"canal 1":w.x};fs=w.fs;nota=w.nota}
+else if(ext==="mat"){const m=await Sg.lerMat(await f.arrayBuffer(),inflar);for(const k in m.vars){const v=m.vars[k];if(v.length>=2048)vars[k]=v;else if(/rpm/i.test(k)&&v.length)rpm=Math.round(v[0])}}
+else if(ext==="csv"||ext==="txt"){const c=Sg.lerCsv(await f.text());c.colunas.forEach((x,i)=>{if(x.length>=2048)vars[c.nomes[i]]=x});fs=c.fs}
+else throw new Error("formato não suportado (use .wav, .csv, .txt ou .mat)");
+const nomes=Object.keys(vars);if(!nomes.length)throw new Error("nenhum sinal com pelo menos 2048 amostras");
+D0={vars,nome:f.name};const sel=e("sr_c");sel.innerHTML=nomes.map(n=>`<option>${n}</option>`).join("");sel.style.display=nomes.length>1?"block":"none";
+if(nomes.length>1){const pref=nomes.find(n=>/DE_time/i.test(n));if(pref)sel.value=pref}
+e("sr_fs").value=fs||"";e("sr_rpm").value=rpm||Math.round(S.rpm);
+msg(f.name+": "+nomes.length+" sinal(is), "+vars[sel.value].length+" amostras"+(fs?", "+fs+" Hz":"")+(rpm?", rpm do arquivo "+rpm:"")+(nota?" ("+nota+")":"")+(fs?"":". Informe a taxa de amostragem.")+(rpm?"":" Rotação preenchida com a da bancada ("+Math.round(S.rpm)+" rpm): corrija se o arquivo for de outra rotação."));
+if(fs)analisa()}catch(x){D0=null;msg("Não foi possível ler: "+x.message)}}
+e("sr_f").onchange=ev=>{if(ev.target.files[0])carrega(ev.target.files[0])};
+function marcas(rpm){return B.freqs(rpm,B.PROFILES[S.profile])}
+function analisa(){if(!D0)return msg("Escolha um arquivo primeiro.");const x=D0.vars[e("sr_c").value],fs=+e("sr_fs").value,rpm=+e("sr_rpm").value,modo=e("sr_m").value;
+if(!(fs>=1000))return msg("Informe a taxa de amostragem (pelo menos 1000 Hz).");if(!(rpm>0))return msg("Informe a rotação do arquivo (rpm).");
+const fmax=modo==="env"?600:Math.min(6000,0.45*fs),real=Sg.analisar(x,fs,modo,fmax),sx=B.synth(S,1),sp=B.spectrum(sx,modo==="env",fmax);sp.df=sp.f[1]-sp.f[0];
+const mr=marcas(rpm),ms=marcas(S.rpm),rr=Sg.resumo(real,mr),rs=Sg.resumo(sp,ms);ult={real,sp,mr,modo,fmax};key=chave();
+desenha();const dg=Math.min(Sg.MAXN,1<<Math.floor(Math.log2(x.length)));
+e("sr_lg").textContent="Azul: sinal real ("+D0.nome+"). Cinza: sintético da bancada ("+Math.round(S.rpm)+" rpm). Marcas no rpm do arquivo. "+(x.length>dg?"Analisadas as primeiras "+dg+" amostras ("+(dg/fs).toFixed(1)+" s). ":"")+(modo==="env"?"Envelope em "+Sg.bandaPadrao(fs).map(Math.round).join("–")+" Hz.":"");
+const R=(r)=>r?(r.razao>=5?"<b>"+r.razao.toFixed(1)+"×</b>":r.razao.toFixed(1)+"×"):"—";
+e("sr_t").innerHTML="<table style='text-align:left'><tr><td class='mut'>Marca</td><td class='mut'>Hz (arquivo)</td><td class='mut'>Real</td><td class='mut'>Sintético</td></tr>"+rr.map(r=>{const s2=rs.find(q=>q.nome===r.nome);return `<tr><td>${r.nome}</td><td>${r.f.toFixed(1)}</td><td>${R(r)}</td><td>${R(s2)}</td></tr>`}).join("")+"</table>";
+const NOME={"1x":"rotação (1×): desbalanceamento ou folga","FTF":"gaiola","BPFO":"pista externa","BPFI":"pista interna","2xBSF":"esfera"},top=rr.filter(r=>r.nome!=="1x").sort((a,b)=>b.razao-a.razao)[0];
+e("sr_x").innerHTML=(top&&top.razao>=5?"Maior marca no sinal real: <b>"+top.nome+" ("+top.razao.toFixed(1)+"× o piso)</b>, compatível com "+NOME[top.nome]+".":"Nenhuma marca de falha passou de 5× o piso neste trecho.")+" <span class='mut'>Indicação didática, não é laudo; o diagnóstico por regras do simulador não foi aplicado ao sinal real."+(B.PROFILES[S.profile].g&&S.profile!=="6205-2RS"&&S.profile!=="6203-2RS"?" Geometria desta máquina é fictícia.":"")+"</span>"}
+function desenha(){if(!ult)return;const c=e("sr_cv"),k=devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;if(!w)return;if(c.width!==Math.round(w*k)){c.width=Math.round(w*k);c.height=Math.round(h*k)}
+const g=c.getContext("2d");g.setTransform(k,0,0,k,0,0);g.clearRect(0,0,w,h);const P=8,X=f=>P+f/ult.fmax*(w-2*P),Y=v=>h-18-v*(h-30);
+const curva=(esp,col)=>{let m=0;for(let i=1;i<esp.a.length;i++)m=Math.max(m,esp.a[i]);g.strokeStyle=col;g.lineWidth=1.5;g.beginPath();for(let i=1;i<esp.f.length;i++){const x=X(esp.f[i]),y=Y(esp.a[i]/(m||1));i>1?g.lineTo(x,y):g.moveTo(x,y)}g.stroke()};
+curva(ult.sp,"#98a2b3");curva(ult.real,"#2e90fa");g.setLineDash([3,3]);g.font="10px sans-serif";g.fillStyle=css("--mut");g.lineWidth=1;[["FTF"],["BPFO"],["BPFI"],["2xBSF"],["1x"]].forEach(([n],i)=>{const f=ult.mr[n];if(!(f>0&&f<ult.fmax))return;g.strokeStyle=css("--ln");g.beginPath();g.moveTo(X(f),12);g.lineTo(X(f),h-18);g.stroke();g.fillText(n,Math.min(X(f)+2,w-34),12+(i%3)*10)});g.setLineDash([]);g.fillStyle=css("--mut");g.fillText("0",P,h-4);g.fillText(Math.round(ult.fmax)+" Hz",w-48,h-4)}
+const chave=()=>[S.profile,S.rpm,S.load,S.oil,S.sev,S.fault,S.lub].join();
+e("sr_ok").onclick=analisa;e("sr_c").onchange=()=>{if(D0)msg(D0.nome+": "+D0.vars[e("sr_c").value].length+" amostras no sinal escolhido")};
+e("sr_eq").onclick=()=>{const r=+e("sr_rpm").value;if(r>0){B.command(S,"set_rpm",Math.round(r/50)*50);sync(true);if(D0)analisa()}};
+const _r=render;render=function(){_r();if(ult&&D0&&chave()!==key)analisa()};addEventListener("resize",desenha);
+})();
+</script>
+</body></html>

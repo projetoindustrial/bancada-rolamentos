@@ -1,4 +1,4 @@
-const V="bearing-lab-v15",F=["./","index.html","engine.js","audio.js","termica.js","cena.js","corrida.js","auditoria.js","apresentador.js","vendor/qrcode.js","vendor/three.min.js","manifest.webmanifest","icon.svg","icon-192.png","icon-512.png"];
+const V="bearing-lab-v21",F=["./","index.html","engine.js","audio.js","termica.js","cena.js","corrida.js","auditoria.js","registro.js","filme.js","comparar.js","cenario.js","sinal.js","linha.js","relatorio.js","vendor/jspdf.umd.min.js","apresentador.js","vendor/qrcode.js","vendor/three.min.js","manifest.webmanifest","icon.svg","icon-192.png","icon-512.png"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(F)));self.skipWaiting()});
 self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(n=>n!==V).map(n=>caches.delete(n)))).then(()=>self.clients.claim())));
 self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{const cp=res.clone();caches.open(V).then(c=>c.put(e.request,cp));return res}).catch(()=>caches.match("index.html"))))});

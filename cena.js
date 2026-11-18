@@ -5,6 +5,7 @@
   const T = typeof require !== "undefined" ? require("./termica.js") : root.BearingTermica;
   const RO = 1.0, RP = 0.78, RB = 0.16, YB = 0.62, YC = YB + RB + RP, TOPO_VIDRO = 2.0, LARG = 3.2, PROF = 1.6;
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const COR2D = { novo: "rgba(230,189,90,0.5)", usado: "rgba(201,138,26,0.6)", envelhecido: "rgba(74,44,16,0.8)" }, COR3D = { novo: 0xe8ae2e, usado: 0xb87414, envelhecido: 0x4a2c10 }, NPART = { novo: 0, usado: 30, envelhecido: 160 };
   // nível desenhado (altura no vidro) em função do nível de óleo %: 50% = fundo da esfera inferior (MÍN), 70% = centro dela, 90% = topo dela (MÁX)
   function yNivel(oil) { const o = clamp(+oil, 0, 100); return o <= 50 ? YB * o / 50 : o <= 90 ? YB + (o - 50) / 40 * 2 * RB : YB + 2 * RB + (o - 90) / 10 * 0.4; }
   function estadoCena(s) {
@@ -37,8 +38,9 @@
     g.fillStyle = term ? amb : "rgba(150,170,180,0.10)"; g.strokeStyle = term ? "rgba(255,255,255,0.35)" : "rgba(120,150,165,0.8)"; g.lineWidth = 2;
     if (!graxa) {
     g.fillRect(X(-LARG / 2), Y(TOPO_VIDRO), LARG * sc, TOPO_VIDRO * sc); g.strokeRect(X(-LARG / 2), Y(TOPO_VIDRO), LARG * sc, TOPO_VIDRO * sc);
-    g.fillStyle = term ? amb : "rgba(201,138,26,0.55)"; const ny = E.nivel + (E.batimento ? Math.sin(t * 9) * 0.03 * E.batimento : 0);
+    const idd = s.idade || "novo"; g.fillStyle = term ? amb : COR2D[idd] || COR2D.novo; const ny = E.nivel + (E.batimento ? Math.sin(t * 9) * 0.03 * E.batimento : 0);
     g.fillRect(X(-LARG / 2) + 1, Y(ny), LARG * sc - 2, ny * sc);
+    if (!term && idd !== "novo") { const np = idd === "usado" ? 25 : 110; g.fillStyle = "rgba(40,24,8,0.75)"; for (let k = 0; k < np; k++) { const px = (Math.sin(k * 12.9898) * 43758.5453) % 1, py = (Math.sin(k * 78.233) * 12543.331) % 1; g.fillRect(X(-LARG / 2) + 4 + Math.abs(px) * (LARG * sc - 8), Y(ny) + 3 + Math.abs(py) * Math.max(0, ny * sc - 6), 2, 2); } if (idd === "envelhecido") { g.fillStyle = "rgba(40,24,8,0.8)"; g.fillRect(X(-LARG / 2) + 1, Y(0.06), LARG * sc - 2, 0.06 * sc); } }
     g.strokeStyle = "rgba(120,130,140,0.9)"; g.lineWidth = 1; g.font = "11px sans-serif"; g.fillStyle = term ? "#fff" : "#667";
     for (const [y, txt] of [[E.nivelMin, "MÍN"], [E.nivelMax, "MÁX"]]) { g.beginPath(); g.moveTo(X(LARG / 2) - 22, Y(y)); g.lineTo(X(LARG / 2), Y(y)); g.stroke(); g.fillText(txt, X(LARG / 2) + 4, Y(y) + 4); }
     }
@@ -88,6 +90,9 @@
     const tanque = mk(new THREE.BoxGeometry(LARG, TOPO_VIDRO, PROF), vidroMat, "vidro"); tanque.position.y = TOPO_VIDRO / 2; scene.add(tanque);
     const bordas = new THREE.LineSegments(new THREE.EdgesGeometry(tanque.geometry), new THREE.LineBasicMaterial({ color: 0x7fa0b0 })); bordas.position.copy(tanque.position); scene.add(bordas);
     const oleo = mk(new THREE.BoxGeometry(LARG - 0.06, 1, PROF - 0.06), oleoMat, "oleo"); scene.add(oleo);
+    const pPos = new Float32Array(160 * 3); for (let k = 0; k < 160; k++) { pPos[k * 3] = (Math.random() - 0.5) * (LARG - 0.3); pPos[k * 3 + 1] = Math.random(); pPos[k * 3 + 2] = (Math.random() - 0.5) * (PROF - 0.3); }
+    const pGeo = new THREE.BufferGeometry(); pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3)); const partic = new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0x24160a, size: 0.05 })); scene.add(partic);
+    const borra = new THREE.Mesh(new THREE.BoxGeometry(LARG - 0.08, 1, PROF - 0.08), new THREE.MeshStandardMaterial({ color: 0x24160a, transparent: true, opacity: 0.85, roughness: 1 })); scene.add(borra);
     const rotulo = (txt, x, y, z, esc) => { const c = document.createElement("canvas"); c.width = 256; c.height = 64; const g = c.getContext("2d"); g.fillStyle = "rgba(20,28,34,0.78)"; g.fillRect(0, 0, 256, 64); g.fillStyle = "#fff"; g.font = "bold 34px sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(txt, 128, 34); const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), depthTest: false })); sp.scale.set(esc || 0.8, (esc || 0.8) / 4, 1); sp.position.set(x, y, z); scene.add(sp); return sp; };
     const grupoOleo = [tanque, bordas, oleo]; const marcaLinha = (y, txt) => { const l = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.025, 0.02), new THREE.MeshBasicMaterial({ color: 0x1b2328 })); l.position.set(LARG / 2 - 0.25, y, PROF / 2 + 0.01); scene.add(l); grupoOleo.push(l, rotulo(txt, LARG / 2 + 0.35, y, PROF / 2, 0.55)); };
     marcaLinha(YB, "MÍN"); marcaLinha(yNivel(90), "MÁX"); rotulo("acelerômetro", 0, YC + RO + 0.55, 0, 1.2);
@@ -110,6 +115,7 @@
       const rx = (Math.sin(t * 61) * E.tremor), ry = (Math.cos(t * 53) * E.tremor); grp.position.set(rx, ry, 0);
       const dt = Math.min(0.05, (t - tp0)); tp0 = t; interno.rotation.z -= E.rotVis * dt; gaiola.rotation.z -= E.rotVis * 0.4 * dt;
       const ny = Math.max(0.002, E.nivel + Math.sin(t * 9) * 0.03 * E.batimento); oleo.scale.y = ny; oleo.position.y = ny / 2;
+      { const idd = s.idade || "novo", tm = API.modo === "termica" || API.lub === "graxa"; oleoMat.color.setHex(COR3D[idd] || COR3D.novo); partic.visible = !tm && idd !== "novo"; partic.geometry.setDrawRange(0, NPART[idd] || 0); partic.scale.y = ny; borra.visible = !tm && idd === "envelhecido"; borra.scale.y = Math.min(0.07, ny); borra.position.y = borra.scale.y / 2; }
       if (API.lub === "graxa") {
         const G = estadoGraxa(s), ch = G.rIn.toFixed(3) + "|" + G.esp.toFixed(3);
         if (ch !== graxaChave) { graxaChave = ch; if (graxaMesh) { gx.remove(graxaMesh); graxaMesh.geometry.dispose(); meshes.splice(meshes.indexOf(graxaMesh), 1); } if (G.rIn < R_EXT - 0.004) { graxaMesh = mk(anel(R_EXT, G.rIn, G.esp), graxaMat, "oleo"); graxaMesh.position.set(0, YC, RB + G.esp / 2); gx.add(graxaMesh); } else graxaMesh = null; }
