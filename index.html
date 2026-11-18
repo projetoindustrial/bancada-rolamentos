@@ -392,7 +392,7 @@ else if(ext==="mat"){const m=await Sg.lerMat(await f.arrayBuffer(),inflar);for(c
 else if(ext==="csv"||ext==="txt"){const c=Sg.lerCsv(await f.text());c.colunas.forEach((x,i)=>{if(x.length>=2048)vars[c.nomes[i]]=x});fs=c.fs}
 else throw new Error("formato não suportado (use .wav, .csv, .txt ou .mat)");
 const nomes=Object.keys(vars);if(!nomes.length)throw new Error("nenhum sinal com pelo menos 2048 amostras");
-D0={vars,nome:f.name};const sel=e("sr_c");sel.innerHTML=nomes.map(n=>`<option>${n}</option>`).join("");sel.style.display=nomes.length>1?"block":"none";
+D0={vars,nome:f.name};const sel=e("sr_c");sel.textContent="";nomes.forEach(n=>sel.add(new Option(n,n)));sel.style.display=nomes.length>1?"block":"none";
 if(nomes.length>1){const pref=nomes.find(n=>/DE_time/i.test(n));if(pref)sel.value=pref}
 e("sr_fs").value=fs||"";e("sr_rpm").value=rpm||Math.round(S.rpm);
 msg(f.name+": "+nomes.length+" sinal(is), "+vars[sel.value].length+" amostras"+(fs?", "+fs+" Hz":"")+(rpm?", rpm do arquivo "+rpm:"")+(nota?" ("+nota+")":"")+(fs?"":". Informe a taxa de amostragem.")+(rpm?"":" Rotação preenchida com a da bancada ("+Math.round(S.rpm)+" rpm): corrija se o arquivo for de outra rotação."));
