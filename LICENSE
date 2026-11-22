@@ -1,0 +1,37 @@
+BEARING AI LAB
+
+Copyright (c) 2026 projetoindustrial (mantenedor do projeto BEARING AI LAB).
+Todos os direitos reservados.
+
+1. Este software, a documentação, os dados sintéticos, as imagens e os demais materiais deste
+   repositório (o "Projeto") são protegidos por direitos autorais. NENHUMA licença de uso, cópia,
+   modificação, distribuição ou criação de obras derivadas é concedida, exceto o que está nos itens
+   2 a 4.
+
+2. É permitido visualizar o Projeto e abrir e usar o site publicado para fins pessoais, educacionais
+   e de avaliação (por exemplo, pela banca do trabalho de conclusão de curso).
+
+3. Valem as permissões que os Termos de Serviço do GitHub concedem a outros usuários da plataforma
+   (por exemplo, visualizar e bifurcar o repositório público dentro do GitHub).
+
+4. É permitido citar trechos curtos com indicação da fonte, nos limites da lei de direitos autorais.
+
+5. Para qualquer outro uso (incluindo reutilizar, adaptar, redistribuir ou usar comercialmente o
+   código, os textos ou os modelos), peça autorização por escrito ao mantenedor.
+
+6. Componentes de terceiros mantêm as suas próprias licenças, listadas em AVISOS_TERCEIROS.md.
+   Nada neste arquivo altera nem substitui essas licenças.
+
+7. SEM GARANTIA. O Projeto é fornecido "no estado em que se encontra", sem garantia de qualquer
+   tipo. É um projeto didático, com dados sintéticos e parâmetros não calibrados: não use em
+   decisões de segurança nem ligado a máquinas reais sem análise de risco (por exemplo, ISO 12100).
+
+-----------------------------------------------------------------------------------------------
+English summary (the Portuguese text above prevails):
+Copyright (c) 2026 projetoindustrial. All rights reserved. No license is granted to use, copy,
+modify or distribute this project, except: viewing it and using the published site for personal,
+educational and evaluation purposes; the rights that GitHub's Terms of Service grant to other
+GitHub users (viewing and forking the public repository on GitHub); and short quotations with
+attribution as permitted by law. Third-party components keep their own licenses (see
+AVISOS_TERCEIROS.md). Provided "as is", without warranty of any kind. Educational project with
+synthetic data: not for safety decisions or real machinery without a risk analysis.

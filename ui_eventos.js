@@ -1,0 +1,36 @@
+/* ui_eventos.js: ligacao dos controles (on(...)), temporizador termico, sync inicial, inicia cena/corrida e registra o service worker.
+   Parte do antigo index.html (separado na v24). Script classico: compartilha o escopo global com os demais ui_*.js;
+   a ORDEM de carga em index.html importa (veja a lista de <script>). */
+const on=(id,ev,fn)=>$(id).addEventListener(ev,fn);
+on("aud","click",()=>{if(SRC){audioStop();return}try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume();audioLoad();$("aud").textContent="⏹ Parar"}catch(e){}});
+on("view","change",e=>{view=e.target.value;if(view==="quiz"){qnew()}else{ctl.reset();Q={sol:null,ans:null,ev:""};sync(true)}qrender();draw()});
+on("qnew","click",()=>{qnew();qrender();draw()});
+on("qopts","click",e=>{const c=e.target.dataset.q;if(!c||Q.ans)return;Q.ans=c;QS.n++;if(c===Q.sol)QS.ok++;try{localStorage.setItem("bal_quiz",JSON.stringify(QS))}catch(er){}qrender();draw()});
+on("qrev","click",()=>{$("qres").innerHTML+=`<div class="mut">Sistema: <b>${B.LABELS[D.cond]||D.abstain||"—"}</b> ${D.evidence.join("; ")}</div>`+(()=>{const f=BearingFilme.filme(S.oil,S.rpm,S.sev);return `<div class="mut">Película (ilustrativa): ${f.rotulo.toLowerCase()}, cerca de ${Math.round(f.um)} µm.</div>`})()});
+on("scn","change",showSc);
+on("scgo","click",()=>{const[n,o]=SC[$("scn").value];B.command(S,"reset");if(o.rpm!==undefined)B.command(S,"set_rpm",o.rpm);if(o.load!==undefined)B.command(S,"set_load",o.load);if(o.oil!==undefined)S.oil=o.oil;if(o.lub)B.command(S,"set_lubricant",o.lub);if(o.fault){B.command(S,"set_fault",o.fault);B.command(S,"set_severity",o.sev)}S.temp=B.steadyTemp(S);ctl.pending={};ctl.halted=false;ctl.haltReason=null;ctl.attempts=0;ctl.muted=null;ctl.lastCond=null;ctl.log.push({t:S.t,src:"console",ev:"CENARIO",data:n,ok:true,reason:"ok"});sync(true)});
+on("rng","change",draw);
+document.addEventListener("click",e=>{const id=e.target.dataset&&e.target.dataset.big;if(!id)return;const k=$(id);k.classList.toggle("big");e.target.textContent=k.classList.contains("big")?"Reduzir":"Ampliar";draw();k.scrollIntoView({block:"nearest"})});
+on("prof","change",e=>{cmd("set_profile",e.target.value,1);ctl.mode="diagnostico";ctl.halted=false;ctl.pending={};sync(true);if(view==="quiz"){qnew();qrender()}});
+on("mode","change",e=>{ctl.setMode(e.target.value);sync(false)});
+on("pend","click",e=>{const t=e.target;if(t.dataset.ap)ctl.approve(t.dataset.ap);else if(t.dataset.rj)ctl.reject(t.dataset.rj);else return;sync(true)});
+for(const[id,c]of[["rpm","set_rpm"],["load","set_load"],["sev","set_severity"]])on(id,"input",e=>cmd(c,e.target.value));
+on("oil","input",e=>{S.oil=+e.target.value;sync(true)});
+on("lub","change",e=>cmd("set_lubricant",e.target.value,1));
+on("fault","change",e=>cmd("set_fault",e.target.value,1));
+on("act","click",()=>{const r=ctl.request(B.buildAction(S,D.action),"assistente");sync(!!r.changed)});
+on("stop","click",()=>{ctl.estop();sync(true)});
+on("adul","click",()=>{AU.sincronizar(ctl.log);if(!AU.itens.length)return;AU.restaurar();AU.adulterar(Math.floor(AU.itens.length/2));auKey="";renderLog()});
+on("rest","click",()=>{AU.restaurar();auKey="";renderLog()});
+document.querySelectorAll("[data-bar]").forEach(b=>b.addEventListener("click",()=>{const r=BearingAuditoria.testarBarreira(b.dataset.bar,S,B);if(!r)return;r.entradas.forEach(e=>ctl.log.push(e));
+  $("barres").innerHTML=`<b>${BearingAuditoria.BARREIRAS[r.tipo].nome}</b><br>${r.negada?"✗ NEGADA":"⚠ NÃO negada"}: ${r.motivo||"—"}<br>Registrada na auditoria (${r.entradas.length} linhas). A máquina em tela não mudou.`;renderLog()}));
+on("reset","click",()=>{ctl.reset();sync(true)});
+setInterval(()=>{if(S.emergency&&S.temp<=26)return;B.stepThermal(S,30);tk++;const dg=+$("deg").value;
+  if(dg&&B.degrade(S,30,dg===1?1/18000:1/3600))sync(true,tk%5!==0);
+  ctl.tick(D)?sync(true):view==="quiz"?qrender():render()},1000);
+addEventListener("resize",draw);
+matchMedia("(prefers-color-scheme:dark)").addEventListener("change",draw);
+sync(true);
+iniciaCena();
+corridaIni();
+if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});

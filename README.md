@@ -30,4 +30,5 @@ Os arquivos em `vendor/` têm a licença de cada projeto ao lado:
 - [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) 1.4.4, licença MIT. "QR Code" é marca registrada da DENSO WAVE INCORPORATED.
 - [jsPDF](https://github.com/parallax/jsPDF) 2.5.2, licença MIT.
 
-A licença do próprio projeto ainda não foi definida pelos autores.
+## Licença
+Copyright (c) 2026 projetoindustrial. **Todos os direitos reservados** (ver [LICENSE](LICENSE)): é permitido visualizar e usar o site para fins pessoais, educacionais e de avaliação, além do que os Termos de Serviço do GitHub permitem a outros usuários da plataforma; qualquer outro uso exige autorização por escrito. Os componentes de terceiros mantêm as próprias licenças ([AVISOS_TERCEIROS.md](AVISOS_TERCEIROS.md)).
