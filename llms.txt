@@ -1,0 +1,10 @@
+# Bancada de Rolamentos
+
+> Simulador didático de rolamentos com som, vibração e diagnóstico assistido. Dados sintéticos.
+
+## Páginas
+- [Bancada de Rolamentos](https://projetoindustrial.github.io/bancada-rolamentos/): página principal
+
+## Projeto Industrial
+- [Portal](https://projetoindustrial.github.io/): início do ecossistema
+- [Sitemap](https://projetoindustrial.github.io/bancada-rolamentos/sitemap.xml)
