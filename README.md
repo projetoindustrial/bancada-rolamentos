@@ -1,4 +1,4 @@
-# Bancada de Rolamentos
+# Simulador de Rolamentos
 
 Simulador didático de rolamentos que roda no navegador, sem servidor e sem login. Faz parte do projeto BEARING AI LAB (Projeto Integrador / TCC).
 
