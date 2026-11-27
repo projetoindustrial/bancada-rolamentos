@@ -31,4 +31,4 @@ Os arquivos em `vendor/` têm a licença de cada projeto ao lado:
 - [jsPDF](https://github.com/parallax/jsPDF) 2.5.2, licença MIT.
 
 ## Licença
-Copyright (c) 2026 projetoindustrial. **Todos os direitos reservados** (ver [LICENSE](LICENSE)): é permitido visualizar e usar o site para fins pessoais, educacionais e de avaliação, além do que os Termos de Serviço do GitHub permitem a outros usuários da plataforma; qualquer outro uso exige autorização por escrito. Os componentes de terceiros mantêm as próprias licenças ([AVISOS_TERCEIROS.md](AVISOS_TERCEIROS.md)).
+Copyright (c) 2026 projetoindustrial. **Todos os direitos reservados** (ver [LICENSE](LICENSE)): é permitido visualizar e usar o site para fins pessoais, educacionais e de avaliação, além do que os Termos de Serviço do GitHub permitem a outros usuários da plataforma; qualquer outro uso exige autorização por escrito. Os componentes de terceiros mantêm as próprias licenças ([AVISOS_TERCEIROS.md](AVISOS_TERCEIROS.md)). Esta condição vale só para o BEARING AI LAB (trabalho de conclusão de curso, ver [LICENSE](LICENSE)); não se estende aos demais blocos do portal, que seguem o que cada um declara.
