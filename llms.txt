@@ -9,7 +9,7 @@
 Os sinais são sintéticos, o som é estilizado, a visão térmica e a película de óleo são ilustrativas e os parâmetros são didáticos, não calibrados. O leitor de sinal real (.wav, .csv/.txt, .mat v5) é só visual: não é laudo e o diagnóstico não é aplicado ao sinal real. Funciona offline depois da primeira visita.
 
 ## Licença
-O BEARING AI LAB é "todos os direitos reservados" (arquivo LICENSE), exceto componentes de terceiros com licença própria (ver AVISOS_TERCEIROS.md no repositório).
+O BEARING AI LAB é "todos os direitos reservados" (arquivo LICENSE), exceto componentes de terceiros com licença própria (ver AVISOS_TERCEIROS.md no repositório). Esta condição vale só para o BEARING AI LAB (trabalho de conclusão de curso, ver LICENSE); não se estende aos demais blocos do portal, que seguem o que cada um declara.
 
 ## Projeto Industrial
 - [Portal](https://projetoindustrial.github.io/): início do ecossistema
