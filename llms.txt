@@ -1,9 +1,9 @@
-# Bancada de Rolamentos
+# Simulador de Rolamentos
 
 > Simulador didático de rolamentos com som, vibração e diagnóstico assistido. Dados sintéticos.
 
 ## Páginas
-- [Bancada de Rolamentos](https://projetoindustrial.github.io/bancada-rolamentos/): página principal
+- [Simulador de Rolamentos](https://projetoindustrial.github.io/bancada-rolamentos/): página principal
 
 ## Aviso
 Os sinais são sintéticos, o som é estilizado, a visão térmica e a película de óleo são ilustrativas e os parâmetros são didáticos, não calibrados. O leitor de sinal real (.wav, .csv/.txt, .mat v5) é só visual: não é laudo e o diagnóstico não é aplicado ao sinal real. Funciona offline depois da primeira visita.

@@ -1,2 +1,2 @@
-{"name":"Bancada de Rolamentos","short_name":"Rolamentos","description":"Simulador didático de rolamentos (dados sintéticos)","start_url":"./index.html","scope":"./","display":"standalone","background_color":"#0f766e","theme_color":"#0f766e","lang":"pt-BR",
+{"name":"Simulador de Rolamentos","short_name":"Rolamentos","description":"Simulador didático de rolamentos (dados sintéticos)","start_url":"./index.html","scope":"./","display":"standalone","background_color":"#0f766e","theme_color":"#0f766e","lang":"pt-BR",
 "icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png"},{"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"},{"src":"icon.svg","sizes":"any","type":"image/svg+xml"}]}
